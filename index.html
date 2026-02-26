@@ -1,419 +1,305 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wellness Wheel Coloring (80 Sections)</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Wellness Wheel Coloring (80 Sections)</title>
+<style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     .wrap { display: grid; grid-template-columns: 1fr; gap: 14px; max-width: 1100px; margin: 0 auto; }
     .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-    .swatch { width: 34px; height: 34px; border: 2px solid #000; border-radius: 8px; cursor: pointer; box-sizing: border-box; }
-    .swatch.selected { outline: 3px solid #000; outline-offset: 2px; }
     button { padding: 10px 14px; border: 2px solid #000; background: #fff; border-radius: 10px; cursor: pointer; font-weight: 700; }
     button:active { transform: translateY(1px); }
     .hint { font-size: 14px; color: #333; line-height: 1.3; }
     .svgbox { border: 2px solid #000; border-radius: 14px; padding: 10px; background: #fff; overflow: auto; }
-    /* Make the SVG responsive */
     .svgbox svg { width: 100%; height: auto; display: block; }
-  </style>
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="toolbar">
-      <div class="hint">
-        <b>Pick a color</b>, then click a section to fill it.<br/>
-        Tip: you can also <b>click + drag</b> to paint multiple sections quickly. (10 rings × 8 slices = 80)
-      </div>
-      <div style="flex: 1;"></div>
-      <button id="resetBtn" type="button">Reset</button>
-      <button id="downloadBtn" type="button">Download PNG</button>
-    </div>
-
-    <div class="toolbar" id="palette" aria-label="Color palette">
-      <!-- swatches inserted by JS -->
-    </div>
-
-    <div class="svgbox">
-<!--?xml version="1.0" encoding="UTF-8"?-->
-<svg id="wheelSvg" xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000">
-  <title>Wellness Wheel - 10 Rings x 8 Segments (80 colorable sections)</title>
-  <rect x="0" y="0" width="1400" height="1000" fill="#ffffff"></rect>
-  <style>
-    .segment { fill: #ffffff; cursor: pointer; stroke: transparent; stroke-width: 3; }
-    .segment:hover { stroke: #000; opacity: 0.95; filter: drop-shadow(0px 0px 4px rgba(0,0,0,0.45)); }
-    .segment:focus { stroke: #000; opacity: 0.95; filter: drop-shadow(0px 0px 4px rgba(0,0,0,0.45)); }
-    .decor { pointer-events: none; }
-  </style>
-  <g id="wheel" transform="translate(700,520)">
-    <!-- 80 colorable segments (10 rings x 8 slices) -->
-    <g id="segments">
-      <path id="seg-r01-s1" class="segment" d="M 0.000 -38.000 A 38.000 38.000 0 0 1 26.870 -26.870 L 0 0 Z"></path>
-      <path id="seg-r01-s2" class="segment" d="M 26.870 -26.870 A 38.000 38.000 0 0 1 38.000 0.000 L 0 0 Z"></path>
-      <path id="seg-r01-s3" class="segment" d="M 38.000 0.000 A 38.000 38.000 0 0 1 26.870 26.870 L 0 0 Z"></path>
-      <path id="seg-r01-s4" class="segment" d="M 26.870 26.870 A 38.000 38.000 0 0 1 0.000 38.000 L 0 0 Z"></path>
-      <path id="seg-r01-s5" class="segment" d="M 0.000 38.000 A 38.000 38.000 0 0 1 -26.870 26.870 L 0 0 Z"></path>
-      <path id="seg-r01-s6" class="segment" d="M -26.870 26.870 A 38.000 38.000 0 0 1 -38.000 0.000 L 0 0 Z"></path>
-      <path id="seg-r01-s7" class="segment" d="M -38.000 0.000 A 38.000 38.000 0 0 1 -26.870 -26.870 L 0 0 Z"></path>
-      <path id="seg-r01-s8" class="segment" d="M -26.870 -26.870 A 38.000 38.000 0 0 1 -0.000 -38.000 L 0 0 Z"></path>
-      <path id="seg-r02-s1" class="segment" d="M 0.000 -76.000 A 76.000 76.000 0 0 1 53.740 -53.740 L 26.870 -26.870 A 38.000 38.000 0 0 0 0.000 -38.000 Z"></path>
-      <path id="seg-r02-s2" class="segment" d="M 53.740 -53.740 A 76.000 76.000 0 0 1 76.000 0.000 L 38.000 0.000 A 38.000 38.000 0 0 0 26.870 -26.870 Z"></path>
-      <path id="seg-r02-s3" class="segment" d="M 76.000 0.000 A 76.000 76.000 0 0 1 53.740 53.740 L 26.870 26.870 A 38.000 38.000 0 0 0 38.000 0.000 Z"></path>
-      <path id="seg-r02-s4" class="segment" d="M 53.740 53.740 A 76.000 76.000 0 0 1 0.000 76.000 L 0.000 38.000 A 38.000 38.000 0 0 0 26.870 26.870 Z"></path>
-      <path id="seg-r02-s5" class="segment" d="M 0.000 76.000 A 76.000 76.000 0 0 1 -53.740 53.740 L -26.870 26.870 A 38.000 38.000 0 0 0 0.000 38.000 Z"></path>
-      <path id="seg-r02-s6" class="segment" d="M -53.740 53.740 A 76.000 76.000 0 0 1 -76.000 0.000 L -38.000 0.000 A 38.000 38.000 0 0 0 -26.870 26.870 Z"></path>
-      <path id="seg-r02-s7" class="segment" d="M -76.000 0.000 A 76.000 76.000 0 0 1 -53.740 -53.740 L -26.870 -26.870 A 38.000 38.000 0 0 0 -38.000 0.000 Z"></path>
-      <path id="seg-r02-s8" class="segment" d="M -53.740 -53.740 A 76.000 76.000 0 0 1 -0.000 -76.000 L -0.000 -38.000 A 38.000 38.000 0 0 0 -26.870 -26.870 Z"></path>
-      <path id="seg-r03-s1" class="segment" d="M 0.000 -114.000 A 114.000 114.000 0 0 1 80.610 -80.610 L 53.740 -53.740 A 76.000 76.000 0 0 0 0.000 -76.000 Z"></path>
-      <path id="seg-r03-s2" class="segment" d="M 80.610 -80.610 A 114.000 114.000 0 0 1 114.000 0.000 L 76.000 0.000 A 76.000 76.000 0 0 0 53.740 -53.740 Z"></path>
-      <path id="seg-r03-s3" class="segment" d="M 114.000 0.000 A 114.000 114.000 0 0 1 80.610 80.610 L 53.740 53.740 A 76.000 76.000 0 0 0 76.000 0.000 Z"></path>
-      <path id="seg-r03-s4" class="segment" d="M 80.610 80.610 A 114.000 114.000 0 0 1 0.000 114.000 L 0.000 76.000 A 76.000 76.000 0 0 0 53.740 53.740 Z"></path>
-      <path id="seg-r03-s5" class="segment" d="M 0.000 114.000 A 114.000 114.000 0 0 1 -80.610 80.610 L -53.740 53.740 A 76.000 76.000 0 0 0 0.000 76.000 Z"></path>
-      <path id="seg-r03-s6" class="segment" d="M -80.610 80.610 A 114.000 114.000 0 0 1 -114.000 0.000 L -76.000 0.000 A 76.000 76.000 0 0 0 -53.740 53.740 Z"></path>
-      <path id="seg-r03-s7" class="segment" d="M -114.000 0.000 A 114.000 114.000 0 0 1 -80.610 -80.610 L -53.740 -53.740 A 76.000 76.000 0 0 0 -76.000 0.000 Z"></path>
-      <path id="seg-r03-s8" class="segment" d="M -80.610 -80.610 A 114.000 114.000 0 0 1 -0.000 -114.000 L -0.000 -76.000 A 76.000 76.000 0 0 0 -53.740 -53.740 Z"></path>
-      <path id="seg-r04-s1" class="segment" d="M 0.000 -152.000 A 152.000 152.000 0 0 1 107.480 -107.480 L 80.610 -80.610 A 114.000 114.000 0 0 0 0.000 -114.000 Z"></path>
-      <path id="seg-r04-s2" class="segment" d="M 107.480 -107.480 A 152.000 152.000 0 0 1 152.000 0.000 L 114.000 0.000 A 114.000 114.000 0 0 0 80.610 -80.610 Z"></path>
-      <path id="seg-r04-s3" class="segment" d="M 152.000 0.000 A 152.000 152.000 0 0 1 107.480 107.480 L 80.610 80.610 A 114.000 114.000 0 0 0 114.000 0.000 Z"></path>
-      <path id="seg-r04-s4" class="segment" d="M 107.480 107.480 A 152.000 152.000 0 0 1 0.000 152.000 L 0.000 114.000 A 114.000 114.000 0 0 0 80.610 80.610 Z"></path>
-      <path id="seg-r04-s5" class="segment" d="M 0.000 152.000 A 152.000 152.000 0 0 1 -107.480 107.480 L -80.610 80.610 A 114.000 114.000 0 0 0 0.000 114.000 Z"></path>
-      <path id="seg-r04-s6" class="segment" d="M -107.480 107.480 A 152.000 152.000 0 0 1 -152.000 0.000 L -114.000 0.000 A 114.000 114.000 0 0 0 -80.610 80.610 Z"></path>
-      <path id="seg-r04-s7" class="segment" d="M -152.000 0.000 A 152.000 152.000 0 0 1 -107.480 -107.480 L -80.610 -80.610 A 114.000 114.000 0 0 0 -114.000 0.000 Z"></path>
-      <path id="seg-r04-s8" class="segment" d="M -107.480 -107.480 A 152.000 152.000 0 0 1 -0.000 -152.000 L -0.000 -114.000 A 114.000 114.000 0 0 0 -80.610 -80.610 Z"></path>
-      <path id="seg-r05-s1" class="segment" d="M 0.000 -190.000 A 190.000 190.000 0 0 1 134.350 -134.350 L 107.480 -107.480 A 152.000 152.000 0 0 0 0.000 -152.000 Z"></path>
-      <path id="seg-r05-s2" class="segment" d="M 134.350 -134.350 A 190.000 190.000 0 0 1 190.000 0.000 L 152.000 0.000 A 152.000 152.000 0 0 0 107.480 -107.480 Z"></path>
-      <path id="seg-r05-s3" class="segment" d="M 190.000 0.000 A 190.000 190.000 0 0 1 134.350 134.350 L 107.480 107.480 A 152.000 152.000 0 0 0 152.000 0.000 Z"></path>
-      <path id="seg-r05-s4" class="segment" d="M 134.350 134.350 A 190.000 190.000 0 0 1 0.000 190.000 L 0.000 152.000 A 152.000 152.000 0 0 0 107.480 107.480 Z"></path>
-      <path id="seg-r05-s5" class="segment" d="M 0.000 190.000 A 190.000 190.000 0 0 1 -134.350 134.350 L -107.480 107.480 A 152.000 152.000 0 0 0 0.000 152.000 Z"></path>
-      <path id="seg-r05-s6" class="segment" d="M -134.350 134.350 A 190.000 190.000 0 0 1 -190.000 0.000 L -152.000 0.000 A 152.000 152.000 0 0 0 -107.480 107.480 Z"></path>
-      <path id="seg-r05-s7" class="segment" d="M -190.000 0.000 A 190.000 190.000 0 0 1 -134.350 -134.350 L -107.480 -107.480 A 152.000 152.000 0 0 0 -152.000 0.000 Z"></path>
-      <path id="seg-r05-s8" class="segment" d="M -134.350 -134.350 A 190.000 190.000 0 0 1 -0.000 -190.000 L -0.000 -152.000 A 152.000 152.000 0 0 0 -107.480 -107.480 Z"></path>
-      <path id="seg-r06-s1" class="segment" d="M 0.000 -228.000 A 228.000 228.000 0 0 1 161.220 -161.220 L 134.350 -134.350 A 190.000 190.000 0 0 0 0.000 -190.000 Z"></path>
-      <path id="seg-r06-s2" class="segment" d="M 161.220 -161.220 A 228.000 228.000 0 0 1 228.000 0.000 L 190.000 0.000 A 190.000 190.000 0 0 0 134.350 -134.350 Z"></path>
-      <path id="seg-r06-s3" class="segment" d="M 228.000 0.000 A 228.000 228.000 0 0 1 161.220 161.220 L 134.350 134.350 A 190.000 190.000 0 0 0 190.000 0.000 Z"></path>
-      <path id="seg-r06-s4" class="segment" d="M 161.220 161.220 A 228.000 228.000 0 0 1 0.000 228.000 L 0.000 190.000 A 190.000 190.000 0 0 0 134.350 134.350 Z"></path>
-      <path id="seg-r06-s5" class="segment" d="M 0.000 228.000 A 228.000 228.000 0 0 1 -161.220 161.220 L -134.350 134.350 A 190.000 190.000 0 0 0 0.000 190.000 Z"></path>
-      <path id="seg-r06-s6" class="segment" d="M -161.220 161.220 A 228.000 228.000 0 0 1 -228.000 0.000 L -190.000 0.000 A 190.000 190.000 0 0 0 -134.350 134.350 Z"></path>
-      <path id="seg-r06-s7" class="segment" d="M -228.000 0.000 A 228.000 228.000 0 0 1 -161.220 -161.220 L -134.350 -134.350 A 190.000 190.000 0 0 0 -190.000 0.000 Z"></path>
-      <path id="seg-r06-s8" class="segment" d="M -161.220 -161.220 A 228.000 228.000 0 0 1 -0.000 -228.000 L -0.000 -190.000 A 190.000 190.000 0 0 0 -134.350 -134.350 Z"></path>
-      <path id="seg-r07-s1" class="segment" d="M 0.000 -266.000 A 266.000 266.000 0 0 1 188.090 -188.090 L 161.220 -161.220 A 228.000 228.000 0 0 0 0.000 -228.000 Z"></path>
-      <path id="seg-r07-s2" class="segment" d="M 188.090 -188.090 A 266.000 266.000 0 0 1 266.000 0.000 L 228.000 0.000 A 228.000 228.000 0 0 0 161.220 -161.220 Z"></path>
-      <path id="seg-r07-s3" class="segment" d="M 266.000 0.000 A 266.000 266.000 0 0 1 188.090 188.090 L 161.220 161.220 A 228.000 228.000 0 0 0 228.000 0.000 Z"></path>
-      <path id="seg-r07-s4" class="segment" d="M 188.090 188.090 A 266.000 266.000 0 0 1 0.000 266.000 L 0.000 228.000 A 228.000 228.000 0 0 0 161.220 161.220 Z"></path>
-      <path id="seg-r07-s5" class="segment" d="M 0.000 266.000 A 266.000 266.000 0 0 1 -188.090 188.090 L -161.220 161.220 A 228.000 228.000 0 0 0 0.000 228.000 Z"></path>
-      <path id="seg-r07-s6" class="segment" d="M -188.090 188.090 A 266.000 266.000 0 0 1 -266.000 0.000 L -228.000 0.000 A 228.000 228.000 0 0 0 -161.220 161.220 Z"></path>
-      <path id="seg-r07-s7" class="segment" d="M -266.000 0.000 A 266.000 266.000 0 0 1 -188.090 -188.090 L -161.220 -161.220 A 228.000 228.000 0 0 0 -228.000 0.000 Z"></path>
-      <path id="seg-r07-s8" class="segment" d="M -188.090 -188.090 A 266.000 266.000 0 0 1 -0.000 -266.000 L -0.000 -228.000 A 228.000 228.000 0 0 0 -161.220 -161.220 Z"></path>
-      <path id="seg-r08-s1" class="segment" d="M 0.000 -304.000 A 304.000 304.000 0 0 1 214.960 -214.960 L 188.090 -188.090 A 266.000 266.000 0 0 0 0.000 -266.000 Z"></path>
-      <path id="seg-r08-s2" class="segment" d="M 214.960 -214.960 A 304.000 304.000 0 0 1 304.000 0.000 L 266.000 0.000 A 266.000 266.000 0 0 0 188.090 -188.090 Z"></path>
-      <path id="seg-r08-s3" class="segment" d="M 304.000 0.000 A 304.000 304.000 0 0 1 214.960 214.960 L 188.090 188.090 A 266.000 266.000 0 0 0 266.000 0.000 Z"></path>
-      <path id="seg-r08-s4" class="segment" d="M 214.960 214.960 A 304.000 304.000 0 0 1 0.000 304.000 L 0.000 266.000 A 266.000 266.000 0 0 0 188.090 188.090 Z"></path>
-      <path id="seg-r08-s5" class="segment" d="M 0.000 304.000 A 304.000 304.000 0 0 1 -214.960 214.960 L -188.090 188.090 A 266.000 266.000 0 0 0 0.000 266.000 Z"></path>
-      <path id="seg-r08-s6" class="segment" d="M -214.960 214.960 A 304.000 304.000 0 0 1 -304.000 0.000 L -266.000 0.000 A 266.000 266.000 0 0 0 -188.090 188.090 Z"></path>
-      <path id="seg-r08-s7" class="segment" d="M -304.000 0.000 A 304.000 304.000 0 0 1 -214.960 -214.960 L -188.090 -188.090 A 266.000 266.000 0 0 0 -266.000 0.000 Z"></path>
-      <path id="seg-r08-s8" class="segment" d="M -214.960 -214.960 A 304.000 304.000 0 0 1 -0.000 -304.000 L -0.000 -266.000 A 266.000 266.000 0 0 0 -188.090 -188.090 Z"></path>
-      <path id="seg-r09-s1" class="segment" d="M 0.000 -342.000 A 342.000 342.000 0 0 1 241.831 -241.831 L 214.960 -214.960 A 304.000 304.000 0 0 0 0.000 -304.000 Z"></path>
-      <path id="seg-r09-s2" class="segment" d="M 241.831 -241.831 A 342.000 342.000 0 0 1 342.000 0.000 L 304.000 0.000 A 304.000 304.000 0 0 0 214.960 -214.960 Z"></path>
-      <path id="seg-r09-s3" class="segment" d="M 342.000 0.000 A 342.000 342.000 0 0 1 241.831 241.831 L 214.960 214.960 A 304.000 304.000 0 0 0 304.000 0.000 Z"></path>
-      <path id="seg-r09-s4" class="segment" d="M 241.831 241.831 A 342.000 342.000 0 0 1 0.000 342.000 L 0.000 304.000 A 304.000 304.000 0 0 0 214.960 214.960 Z"></path>
-      <path id="seg-r09-s5" class="segment" d="M 0.000 342.000 A 342.000 342.000 0 0 1 -241.831 241.831 L -214.960 214.960 A 304.000 304.000 0 0 0 0.000 304.000 Z"></path>
-      <path id="seg-r09-s6" class="segment" d="M -241.831 241.831 A 342.000 342.000 0 0 1 -342.000 0.000 L -304.000 0.000 A 304.000 304.000 0 0 0 -214.960 214.960 Z"></path>
-      <path id="seg-r09-s7" class="segment" d="M -342.000 0.000 A 342.000 342.000 0 0 1 -241.831 -241.831 L -214.960 -214.960 A 304.000 304.000 0 0 0 -304.000 0.000 Z"></path>
-      <path id="seg-r09-s8" class="segment" d="M -241.831 -241.831 A 342.000 342.000 0 0 1 -0.000 -342.000 L -0.000 -304.000 A 304.000 304.000 0 0 0 -214.960 -214.960 Z"></path>
-      <path id="seg-r10-s1" class="segment" d="M 0.000 -380.000 A 380.000 380.000 0 0 1 268.701 -268.701 L 241.831 -241.831 A 342.000 342.000 0 0 0 0.000 -342.000 Z"></path>
-      <path id="seg-r10-s2" class="segment" d="M 268.701 -268.701 A 380.000 380.000 0 0 1 380.000 0.000 L 342.000 0.000 A 342.000 342.000 0 0 0 241.831 -241.831 Z"></path>
-      <path id="seg-r10-s3" class="segment" d="M 380.000 0.000 A 380.000 380.000 0 0 1 268.701 268.701 L 241.831 241.831 A 342.000 342.000 0 0 0 342.000 0.000 Z"></path>
-      <path id="seg-r10-s4" class="segment" d="M 268.701 268.701 A 380.000 380.000 0 0 1 0.000 380.000 L 0.000 342.000 A 342.000 342.000 0 0 0 241.831 241.831 Z"></path>
-      <path id="seg-r10-s5" class="segment" d="M 0.000 380.000 A 380.000 380.000 0 0 1 -268.701 268.701 L -241.831 241.831 A 342.000 342.000 0 0 0 0.000 342.000 Z"></path>
-      <path id="seg-r10-s6" class="segment" d="M -268.701 268.701 A 380.000 380.000 0 0 1 -380.000 0.000 L -342.000 0.000 A 342.000 342.000 0 0 0 -241.831 241.831 Z"></path>
-      <path id="seg-r10-s7" class="segment" d="M -380.000 0.000 A 380.000 380.000 0 0 1 -268.701 -268.701 L -241.831 -241.831 A 342.000 342.000 0 0 0 -342.000 0.000 Z"></path>
-      <path id="seg-r10-s8" class="segment" d="M -268.701 -268.701 A 380.000 380.000 0 0 1 -0.000 -380.000 L -0.000 -342.000 A 342.000 342.000 0 0 0 -241.831 -241.831 Z"></path>
-    </g>
-
-    <!-- Ring outlines -->
-    <circle class="decor" r="38" fill="none" stroke="#000" stroke-width="4"></circle>
-    <circle class="decor" r="76" fill="none" stroke="#000" stroke-width="4"></circle>
-    <circle class="decor" r="114" fill="none" stroke="#000" stroke-width="4"></circle>
-    <circle class="decor" r="152" fill="none" stroke="#000" stroke-width="4"></circle>
-    <circle class="decor" r="190" fill="none" stroke="#000" stroke-width="4"></circle>
-    <circle class="decor" r="228" fill="none" stroke="#000" stroke-width="4"></circle>
-    <circle class="decor" r="266" fill="none" stroke="#000" stroke-width="4"></circle>
-    <circle class="decor" r="304" fill="none" stroke="#000" stroke-width="4"></circle>
-    <circle class="decor" r="342" fill="none" stroke="#000" stroke-width="4"></circle>
-    <circle class="decor" r="380" fill="none" stroke="#000" stroke-width="10"></circle>
-
-    <!-- 8 radial dividers (every 45 degrees) -->
-    <g class="decor" stroke="#000" stroke-width="8" stroke-linecap="round">
-      <line x1="0" y1="0" x2="0" y2="-380"></line>
-      <line x1="0" y1="0" x2="268.7" y2="-268.7"></line>
-      <line x1="0" y1="0" x2="380" y2="0"></line>
-      <line x1="0" y1="0" x2="268.7" y2="268.7"></line>
-      <line x1="0" y1="0" x2="0" y2="380"></line>
-      <line x1="0" y1="0" x2="-268.7" y2="268.7"></line>
-      <line x1="0" y1="0" x2="-380" y2="0"></line>
-      <line x1="0" y1="0" x2="-268.7" y2="-268.7"></line>
-    </g>
-    <circle class="decor" r="6" fill="#000"></circle>
-  </g>
-
-<!-- ===== Labels (single words only, spaced away from circle) ===== -->
-  <!-- You can tweak these positions by changing the x/y values. -->
-  <g font-family="Arial" font-size="46" font-weight="700" fill="#000">
-    <!-- Top -->
-    <text x="700" y="70" text-anchor="middle">Occupational</text>
-
-    <!-- Top-right -->
-    <text x="1045" y="165" text-anchor="middle">Emotional</text>
-
-    <!-- Right -->
-    <text x="1245" y="520" text-anchor="middle">Social</text>
-
-    <!-- Bottom-right -->
-    <text x="1090" y="880" text-anchor="middle">Financial</text>
-
-    <!-- Bottom -->
-    <text x="700" y="960" text-anchor="middle">Environmental</text>
-
-    <!-- Bottom-left -->
-    <text x="310" y="880" text-anchor="middle">Intellectual</text>
-
-    <!-- Left -->
-    <text x="145" y="520" text-anchor="middle">Physical</text>
-
-    <!-- Top-left -->
-    <text x="355" y="165" text-anchor="middle">Spiritual</text>
-  </g>
-</svg>
-
-
-    </div>
+<div class="wrap">
+  <div class="toolbar">
+    <div class="hint"><b>Click a ring in a slice</b> (fills from center up to that level; clears above)</div>
+    <div style="flex: 1;"></div>
+    <button id="resetBtn" type="button">Reset</button>
+    <button id="downloadBtn" type="button">Download PNG</button>
   </div>
+
+  <div class="svgbox">
+    <svg height="1000" id="wheelSvg" viewBox="0 0 1400 1000" width="1400" xmlns="http://www.w3.org/2000/svg">
+      <title>Wellness Wheel - 10 Rings x 8 Segments (80 colorable sections)</title>
+      <rect fill="#ffffff" height="1000" width="1400" x="0" y="0"></rect>
+
+      <style>
+        .segment { fill: #ffffff; cursor: pointer; stroke: transparent; stroke-width: 3; transition: filter 120ms ease, opacity 120ms ease; }
+        .segment:hover { stroke: #000; opacity: 0.92; filter: drop-shadow(0px 0px 4px rgba(0,0,0,0.35)); }
+        .decor { pointer-events: none; }
+      </style>
+
+      <g id="wheel" transform="translate(700,520)">
+        <g id="segments">
+          <path class="segment" d="M 0.000 -38.000 A 38.000 38.000 0 0 1 26.870 -26.870 L 0 0 Z" id="seg-r01-s1"></path>
+          <path class="segment" d="M 26.870 -26.870 A 38.000 38.000 0 0 1 38.000 0.000 L 0 0 Z" id="seg-r01-s2"></path>
+          <path class="segment" d="M 38.000 0.000 A 38.000 38.000 0 0 1 26.870 26.870 L 0 0 Z" id="seg-r01-s3"></path>
+          <path class="segment" d="M 26.870 26.870 A 38.000 38.000 0 0 1 0.000 38.000 L 0 0 Z" id="seg-r01-s4"></path>
+          <path class="segment" d="M 0.000 38.000 A 38.000 38.000 0 0 1 -26.870 26.870 L 0 0 Z" id="seg-r01-s5"></path>
+          <path class="segment" d="M -26.870 26.870 A 38.000 38.000 0 0 1 -38.000 0.000 L 0 0 Z" id="seg-r01-s6"></path>
+          <path class="segment" d="M -38.000 0.000 A 38.000 38.000 0 0 1 -26.870 -26.870 L 0 0 Z" id="seg-r01-s7"></path>
+          <path class="segment" d="M -26.870 -26.870 A 38.000 38.000 0 0 1 -0.000 -38.000 L 0 0 Z" id="seg-r01-s8"></path>
+
+          <path class="segment" d="M 0.000 -76.000 A 76.000 76.000 0 0 1 53.740 -53.740 L 26.870 -26.870 A 38.000 38.000 0 0 0 0.000 -38.000 Z" id="seg-r02-s1"></path>
+          <path class="segment" d="M 53.740 -53.740 A 76.000 76.000 0 0 1 76.000 0.000 L 38.000 0.000 A 38.000 38.000 0 0 0 26.870 -26.870 Z" id="seg-r02-s2"></path>
+          <path class="segment" d="M 76.000 0.000 A 76.000 76.000 0 0 1 53.740 53.740 L 26.870 26.870 A 38.000 38.000 0 0 0 38.000 0.000 Z" id="seg-r02-s3"></path>
+          <path class="segment" d="M 53.740 53.740 A 76.000 76.000 0 0 1 0.000 76.000 L 0.000 38.000 A 38.000 38.000 0 0 0 26.870 26.870 Z" id="seg-r02-s4"></path>
+          <path class="segment" d="M 0.000 76.000 A 76.000 76.000 0 0 1 -53.740 53.740 L -26.870 26.870 A 38.000 38.000 0 0 0 0.000 38.000 Z" id="seg-r02-s5"></path>
+          <path class="segment" d="M -53.740 53.740 A 76.000 76.000 0 0 1 -76.000 0.000 L -38.000 0.000 A 38.000 38.000 0 0 0 -26.870 26.870 Z" id="seg-r02-s6"></path>
+          <path class="segment" d="M -76.000 0.000 A 76.000 76.000 0 0 1 -53.740 -53.740 L -26.870 -26.870 A 38.000 38.000 0 0 0 -38.000 0.000 Z" id="seg-r02-s7"></path>
+          <path class="segment" d="M -53.740 -53.740 A 76.000 76.000 0 0 1 -0.000 -76.000 L -0.000 -38.000 A 38.000 38.000 0 0 0 -26.870 -26.870 Z" id="seg-r02-s8"></path>
+
+          <path class="segment" d="M 0.000 -114.000 A 114.000 114.000 0 0 1 80.610 -80.610 L 53.740 -53.740 A 76.000 76.000 0 0 0 0.000 -76.000 Z" id="seg-r03-s1"></path>
+          <path class="segment" d="M 80.610 -80.610 A 114.000 114.000 0 0 1 114.000 0.000 L 76.000 0.000 A 76.000 76.000 0 0 0 53.740 -53.740 Z" id="seg-r03-s2"></path>
+          <path class="segment" d="M 114.000 0.000 A 114.000 114.000 0 0 1 80.610 80.610 L 53.740 53.740 A 76.000 76.000 0 0 0 76.000 0.000 Z" id="seg-r03-s3"></path>
+          <path class="segment" d="M 80.610 80.610 A 114.000 114.000 0 0 1 0.000 114.000 L 0.000 76.000 A 76.000 76.000 0 0 0 53.740 53.740 Z" id="seg-r03-s4"></path>
+          <path class="segment" d="M 0.000 114.000 A 114.000 114.000 0 0 1 -80.610 80.610 L -53.740 53.740 A 76.000 76.000 0 0 0 0.000 76.000 Z" id="seg-r03-s5"></path>
+          <path class="segment" d="M -80.610 80.610 A 114.000 114.000 0 0 1 -114.000 0.000 L -76.000 0.000 A 76.000 76.000 0 0 0 -53.740 53.740 Z" id="seg-r03-s6"></path>
+          <path class="segment" d="M -114.000 0.000 A 114.000 114.000 0 0 1 -80.610 -80.610 L -53.740 -53.740 A 76.000 76.000 0 0 0 -76.000 0.000 Z" id="seg-r03-s7"></path>
+          <path class="segment" d="M -80.610 -80.610 A 114.000 114.000 0 0 1 -0.000 -114.000 L -0.000 -76.000 A 76.000 76.000 0 0 0 -53.740 -53.740 Z" id="seg-r03-s8"></path>
+
+          <path class="segment" d="M 0.000 -152.000 A 152.000 152.000 0 0 1 107.480 -107.480 L 80.610 -80.610 A 114.000 114.000 0 0 0 0.000 -114.000 Z" id="seg-r04-s1"></path>
+          <path class="segment" d="M 107.480 -107.480 A 152.000 152.000 0 0 1 152.000 0.000 L 114.000 0.000 A 114.000 114.000 0 0 0 80.610 -80.610 Z" id="seg-r04-s2"></path>
+          <path class="segment" d="M 152.000 0.000 A 152.000 152.000 0 0 1 107.480 107.480 L 80.610 80.610 A 114.000 114.000 0 0 0 114.000 0.000 Z" id="seg-r04-s3"></path>
+          <path class="segment" d="M 107.480 107.480 A 152.000 152.000 0 0 1 0.000 152.000 L 0.000 114.000 A 114.000 114.000 0 0 0 80.610 80.610 Z" id="seg-r04-s4"></path>
+          <path class="segment" d="M 0.000 152.000 A 152.000 152.000 0 0 1 -107.480 107.480 L -80.610 80.610 A 114.000 114.000 0 0 0 0.000 114.000 Z" id="seg-r04-s5"></path>
+          <path class="segment" d="M -107.480 107.480 A 152.000 152.000 0 0 1 -152.000 0.000 L -114.000 0.000 A 114.000 114.000 0 0 0 -80.610 80.610 Z" id="seg-r04-s6"></path>
+          <path class="segment" d="M -152.000 0.000 A 152.000 152.000 0 0 1 -107.480 -107.480 L -80.610 -80.610 A 114.000 114.000 0 0 0 -114.000 0.000 Z" id="seg-r04-s7"></path>
+          <path class="segment" d="M -107.480 -107.480 A 152.000 152.000 0 0 1 -0.000 -152.000 L -0.000 -114.000 A 114.000 114.000 0 0 0 -80.610 -80.610 Z" id="seg-r04-s8"></path>
+
+          <path class="segment" d="M 0.000 -190.000 A 190.000 190.000 0 0 1 134.350 -134.350 L 107.480 -107.480 A 152.000 152.000 0 0 0 0.000 -152.000 Z" id="seg-r05-s1"></path>
+          <path class="segment" d="M 134.350 -134.350 A 190.000 190.000 0 0 1 190.000 0.000 L 152.000 0.000 A 152.000 152.000 0 0 0 107.480 -107.480 Z" id="seg-r05-s2"></path>
+          <path class="segment" d="M 190.000 0.000 A 190.000 190.000 0 0 1 134.350 134.350 L 107.480 107.480 A 152.000 152.000 0 0 0 152.000 0.000 Z" id="seg-r05-s3"></path>
+          <path class="segment" d="M 134.350 134.350 A 190.000 190.000 0 0 1 0.000 190.000 L 0.000 152.000 A 152.000 152.000 0 0 0 107.480 107.480 Z" id="seg-r05-s4"></path>
+          <path class="segment" d="M 0.000 190.000 A 190.000 190.000 0 0 1 -134.350 134.350 L -107.480 107.480 A 152.000 152.000 0 0 0 0.000 152.000 Z" id="seg-r05-s5"></path>
+          <path class="segment" d="M -134.350 134.350 A 190.000 190.000 0 0 1 -190.000 0.000 L -152.000 0.000 A 152.000 152.000 0 0 0 -107.480 107.480 Z" id="seg-r05-s6"></path>
+          <path class="segment" d="M -190.000 0.000 A 190.000 190.000 0 0 1 -134.350 -134.350 L -107.480 -107.480 A 152.000 152.000 0 0 0 -152.000 0.000 Z" id="seg-r05-s7"></path>
+          <path class="segment" d="M -134.350 -134.350 A 190.000 190.000 0 0 1 -0.000 -190.000 L -0.000 -152.000 A 152.000 152.000 0 0 0 -107.480 -107.480 Z" id="seg-r05-s8"></path>
+
+          <path class="segment" d="M 0.000 -228.000 A 228.000 228.000 0 0 1 161.220 -161.220 L 134.350 -134.350 A 190.000 190.000 0 0 0 0.000 -190.000 Z" id="seg-r06-s1"></path>
+          <path class="segment" d="M 161.220 -161.220 A 228.000 228.000 0 0 1 228.000 0.000 L 190.000 0.000 A 190.000 190.000 0 0 0 134.350 -134.350 Z" id="seg-r06-s2"></path>
+          <path class="segment" d="M 228.000 0.000 A 228.000 228.000 0 0 1 161.220 161.220 L 134.350 134.350 A 190.000 190.000 0 0 0 190.000 0.000 Z" id="seg-r06-s3"></path>
+          <path class="segment" d="M 161.220 161.220 A 228.000 228.000 0 0 1 0.000 228.000 L 0.000 190.000 A 190.000 190.000 0 0 0 134.350 134.350 Z" id="seg-r06-s4"></path>
+          <path class="segment" d="M 0.000 228.000 A 228.000 228.000 0 0 1 -161.220 161.220 L -134.350 134.350 A 190.000 190.000 0 0 0 0.000 190.000 Z" id="seg-r06-s5"></path>
+          <path class="segment" d="M -161.220 161.220 A 228.000 228.000 0 0 1 -228.000 0.000 L -190.000 0.000 A 190.000 190.000 0 0 0 -134.350 134.350 Z" id="seg-r06-s6"></path>
+          <path class="segment" d="M -228.000 0.000 A 228.000 228.000 0 0 1 -161.220 -161.220 L -134.350 -134.350 A 190.000 190.000 0 0 0 -190.000 0.000 Z" id="seg-r06-s7"></path>
+          <path class="segment" d="M -161.220 -161.220 A 228.000 228.000 0 0 1 -0.000 -228.000 L -0.000 -190.000 A 190.000 190.000 0 0 0 -134.350 -134.350 Z" id="seg-r06-s8"></path>
+
+          <path class="segment" d="M 0.000 -266.000 A 266.000 266.000 0 0 1 188.090 -188.090 L 161.220 -161.220 A 228.000 228.000 0 0 0 0.000 -228.000 Z" id="seg-r07-s1"></path>
+          <path class="segment" d="M 188.090 -188.090 A 266.000 266.000 0 0 1 266.000 0.000 L 228.000 0.000 A 228.000 228.000 0 0 0 161.220 -161.220 Z" id="seg-r07-s2"></path>
+          <path class="segment" d="M 266.000 0.000 A 266.000 266.000 0 0 1 188.090 188.090 L 161.220 161.220 A 228.000 228.000 0 0 0 228.000 0.000 Z" id="seg-r07-s3"></path>
+          <path class="segment" d="M 188.090 188.090 A 266.000 266.000 0 0 1 0.000 266.000 L 0.000 228.000 A 228.000 228.000 0 0 0 161.220 161.220 Z" id="seg-r07-s4"></path>
+          <path class="segment" d="M 0.000 266.000 A 266.000 266.000 0 0 1 -188.090 188.090 L -161.220 161.220 A 228.000 228.000 0 0 0 0.000 228.000 Z" id="seg-r07-s5"></path>
+          <path class="segment" d="M -188.090 188.090 A 266.000 266.000 0 0 1 -266.000 0.000 L -228.000 0.000 A 228.000 228.000 0 0 0 -161.220 161.220 Z" id="seg-r07-s6"></path>
+          <path class="segment" d="M -266.000 0.000 A 266.000 266.000 0 0 1 -188.090 -188.090 L -161.220 -161.220 A 228.000 228.000 0 0 0 -228.000 0.000 Z" id="seg-r07-s7"></path>
+          <path class="segment" d="M -188.090 -188.090 A 266.000 266.000 0 0 1 -0.000 -266.000 L -0.000 -228.000 A 228.000 228.000 0 0 0 -161.220 -161.220 Z" id="seg-r07-s8"></path>
+
+          <path class="segment" d="M 0.000 -304.000 A 304.000 304.000 0 0 1 214.960 -214.960 L 188.090 -188.090 A 266.000 266.000 0 0 0 0.000 -266.000 Z" id="seg-r08-s1"></path>
+          <path class="segment" d="M 214.960 -214.960 A 304.000 304.000 0 0 1 304.000 0.000 L 266.000 0.000 A 266.000 266.000 0 0 0 188.090 -188.090 Z" id="seg-r08-s2"></path>
+          <path class="segment" d="M 304.000 0.000 A 304.000 304.000 0 0 1 214.960 214.960 L 188.090 188.090 A 266.000 266.000 0 0 0 266.000 0.000 Z" id="seg-r08-s3"></path>
+          <path class="segment" d="M 214.960 214.960 A 304.000 304.000 0 0 1 0.000 304.000 L 0.000 266.000 A 266.000 266.000 0 0 0 188.090 188.090 Z" id="seg-r08-s4"></path>
+          <path class="segment" d="M 0.000 304.000 A 304.000 304.000 0 0 1 -214.960 214.960 L -188.090 188.090 A 266.000 266.000 0 0 0 0.000 266.000 Z" id="seg-r08-s5"></path>
+          <path class="segment" d="M -214.960 214.960 A 304.000 304.000 0 0 1 -304.000 0.000 L -266.000 0.000 A 266.000 266.000 0 0 0 -188.090 188.090 Z" id="seg-r08-s6"></path>
+          <path class="segment" d="M -304.000 0.000 A 304.000 304.000 0 0 1 -214.960 -214.960 L -188.090 -188.090 A 266.000 266.000 0 0 0 -266.000 0.000 Z" id="seg-r08-s7"></path>
+          <path class="segment" d="M -214.960 -214.960 A 304.000 304.000 0 0 1 -0.000 -304.000 L -0.000 -266.000 A 266.000 266.000 0 0 0 -188.090 -188.090 Z" id="seg-r08-s8"></path>
+
+          <path class="segment" d="M 0.000 -342.000 A 342.000 342.000 0 0 1 241.831 -241.831 L 214.960 -214.960 A 304.000 304.000 0 0 0 0.000 -304.000 Z" id="seg-r09-s1"></path>
+          <path class="segment" d="M 241.831 -241.831 A 342.000 342.000 0 0 1 342.000 0.000 L 304.000 0.000 A 304.000 304.000 0 0 0 214.960 -214.960 Z" id="seg-r09-s2"></path>
+          <path class="segment" d="M 342.000 0.000 A 342.000 342.000 0 0 1 241.831 241.831 L 214.960 214.960 A 304.000 304.000 0 0 0 304.000 0.000 Z" id="seg-r09-s3"></path>
+          <path class="segment" d="M 241.831 241.831 A 342.000 342.000 0 0 1 0.000 342.000 L 0.000 304.000 A 304.000 304.000 0 0 0 214.960 214.960 Z" id="seg-r09-s4"></path>
+          <path class="segment" d="M 0.000 342.000 A 342.000 342.000 0 0 1 -241.831 241.831 L -214.960 214.960 A 304.000 304.000 0 0 0 0.000 304.000 Z" id="seg-r09-s5"></path>
+          <path class="segment" d="M -241.831 241.831 A 342.000 342.000 0 0 1 -342.000 0.000 L -304.000 0.000 A 304.000 304.000 0 0 0 -214.960 214.960 Z" id="seg-r09-s6"></path>
+          <path class="segment" d="M -342.000 0.000 A 342.000 342.000 0 0 1 -241.831 -241.831 L -214.960 -214.960 A 304.000 304.000 0 0 0 -304.000 0.000 Z" id="seg-r09-s7"></path>
+          <path class="segment" d="M -241.831 -241.831 A 342.000 342.000 0 0 1 -0.000 -342.000 L -0.000 -304.000 A 304.000 304.000 0 0 0 -214.960 -214.960 Z" id="seg-r09-s8"></path>
+
+          <path class="segment" d="M 0.000 -380.000 A 380.000 380.000 0 0 1 268.701 -268.701 L 241.831 -241.831 A 342.000 342.000 0 0 0 0.000 -342.000 Z" id="seg-r10-s1"></path>
+          <path class="segment" d="M 268.701 -268.701 A 380.000 380.000 0 0 1 380.000 0.000 L 342.000 0.000 A 342.000 342.000 0 0 0 241.831 -241.831 Z" id="seg-r10-s2"></path>
+          <path class="segment" d="M 380.000 0.000 A 380.000 380.000 0 0 1 268.701 268.701 L 241.831 241.831 A 342.000 342.000 0 0 0 342.000 0.000 Z" id="seg-r10-s3"></path>
+          <path class="segment" d="M 268.701 268.701 A 380.000 380.000 0 0 1 0.000 380.000 L 0.000 342.000 A 342.000 342.000 0 0 0 241.831 241.831 Z" id="seg-r10-s4"></path>
+          <path class="segment" d="M 0.000 380.000 A 380.000 380.000 0 0 1 -268.701 268.701 L -241.831 241.831 A 342.000 342.000 0 0 0 0.000 342.000 Z" id="seg-r10-s5"></path>
+          <path class="segment" d="M -268.701 268.701 A 380.000 380.000 0 0 1 -380.000 0.000 L -342.000 0.000 A 342.000 342.000 0 0 0 -241.831 241.831 Z" id="seg-r10-s6"></path>
+          <path class="segment" d="M -380.000 0.000 A 380.000 380.000 0 0 1 -268.701 -268.701 L -241.831 -241.831 A 342.000 342.000 0 0 0 -342.000 0.000 Z" id="seg-r10-s7"></path>
+          <path class="segment" d="M -268.701 -268.701 A 380.000 380.000 0 0 1 -0.000 -380.000 L -0.000 -342.000 A 342.000 342.000 0 0 0 -241.831 -241.831 Z" id="seg-r10-s8"></path>
+        </g>
+
+        <!-- Ring outlines -->
+        <circle class="decor" fill="none" r="38"  stroke="#000" stroke-width="4"></circle>
+        <circle class="decor" fill="none" r="76"  stroke="#000" stroke-width="4"></circle>
+        <circle class="decor" fill="none" r="114" stroke="#000" stroke-width="4"></circle>
+        <circle class="decor" fill="none" r="152" stroke="#000" stroke-width="4"></circle>
+        <circle class="decor" fill="none" r="190" stroke="#000" stroke-width="4"></circle>
+        <circle class="decor" fill="none" r="228" stroke="#000" stroke-width="4"></circle>
+        <circle class="decor" fill="none" r="266" stroke="#000" stroke-width="4"></circle>
+        <circle class="decor" fill="none" r="304" stroke="#000" stroke-width="4"></circle>
+        <circle class="decor" fill="none" r="342" stroke="#000" stroke-width="4"></circle>
+        <circle class="decor" fill="none" r="380" stroke="#000" stroke-width="10"></circle>
+
+        <!-- 8 radial dividers -->
+        <g class="decor" stroke="#000" stroke-linecap="round" stroke-width="8">
+          <line x1="0" x2="0" y1="0" y2="-380"></line>
+          <line x1="0" x2="268.7" y1="0" y2="-268.7"></line>
+          <line x1="0" x2="380" y1="0" y2="0"></line>
+          <line x1="0" x2="268.7" y1="0" y2="268.7"></line>
+          <line x1="0" x2="0" y1="0" y2="380"></line>
+          <line x1="0" x2="-268.7" y1="0" y2="268.7"></line>
+          <line x1="0" x2="-380" y1="0" y2="0"></line>
+          <line x1="0" x2="-268.7" y1="0" y2="-268.7"></line>
+        </g>
+
+        <circle class="decor" fill="#000" r="6"></circle>
+      </g>
+
+      <!-- Labels (main words only) -->
+      <g id="labels">
+        <g>
+          <rect fill="#2E7D32" height="78" rx="16" ry="16" width="148" x="802.034379" y="56.015415"></rect>
+          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="876.034379" y="111.015415">Work</text>
+        </g>
+
+        <!-- Social shifted right -->
+        <g>
+          <rect fill="#E53935" height="78" rx="16" ry="16" width="196" x="1066.984585" y="304.965621"></rect>
+          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="1164.984585" y="359.965621">Social</text>
+        </g>
+
+        <!-- Surroundings shifted right -->
+        <g>
+          <rect fill="#F9D400" height="78" rx="16" ry="16" width="340" x="994.984585" y="657.034379"></rect>
+          <text fill="black" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="1164.984585" y="712.034379">Surroundings</text>
+        </g>
+
+        <g>
+          <rect fill="#0B4DBA" height="78" rx="16" ry="16" width="244" x="754.034379" y="905.984585"></rect>
+          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="876.034379" y="960.984585">Physical</text>
+        </g>
+
+        <g>
+          <rect fill="#2E7D32" height="78" rx="16" ry="16" width="268" x="389.965621" y="905.984585"></rect>
+          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="523.965621" y="960.984585">Financial</text>
+        </g>
+
+        <!-- Spiritual shifted left -->
+        <g>
+          <rect fill="#E53935" height="78" rx="16" ry="16" width="268" x="101.015415" y="657.034379"></rect>
+          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="235.015415" y="712.034379">Spiritual</text>
+        </g>
+
+        <!-- Learning shifted left -->
+        <g>
+          <rect fill="#F9D400" height="78" rx="16" ry="16" width="244" x="113.015415" y="304.965621"></rect>
+          <text fill="black" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="235.015415" y="359.965621">Learning</text>
+        </g>
+
+        <g>
+          <rect fill="#0B4DBA" height="78" rx="16" ry="16" width="268" x="389.965621" y="56.015415"></rect>
+          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="523.965621" y="111.015415">Emotional</text>
+        </g>
+      </g>
+    </svg>
+  </div>
+</div>
 
 <script>
 (() => {
-  const COLORS = [
-    "#000000","#ffffff","#ff3b30","#ff9500","#ffcc00","#34c759","#0a84ff","#5856d6",
-    "#ff2d55","#8e8e93","#64d2ff","#30d158","#ffd60a","#bf5af2","#ac8e68","#1c1c1e"
-  ];
-
-  let currentColor = COLORS[2]; // default red-ish
-
-  const palette = document.getElementById("palette");
-
-  function makeSwatch(color, selected=false) {
-    const d = document.createElement("div");
-    d.className = "swatch" + (selected ? " selected" : "");
-    d.style.background = color;
-    d.title = color;
-    d.dataset.color = color;
-    d.setAttribute("role","button");
-    d.setAttribute("tabindex","0");
-    d.addEventListener("click", () => selectColor(color));
-    d.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        selectColor(color);
-      }
-    });
-    return d;
-  }
-
-  function selectColor(color) {
-    currentColor = color;
-    document.querySelectorAll(".swatch").forEach(s => {
-      s.classList.toggle("selected", s.dataset.color === color);
-    });
-  }
-
-  // Build palette
-  COLORS.forEach((c, i) => palette.appendChild(makeSwatch(c, i === 2)));
+  // Fixed slice colors
+  const SLICE_COLOR = {
+    1: "#2E7D32", // Work
+    2: "#E53935", // Social
+    3: "#F9D400", // Surroundings
+    4: "#0B4DBA", // Physical
+    5: "#2E7D32", // Financial
+    6: "#E53935", // Spiritual
+    7: "#F9D400", // Learning
+    8: "#0B4DBA"  // Emotional
+  };
 
   const svg = document.getElementById("wheelSvg");
-  if (!svg) {
-    alert("Could not find the SVG element (#wheelSvg).");
-    return;
+  const segments = Array.from(svg.querySelectorAll(".segment"));
+
+  function parseId(el) {
+    const m = (el.id || "").match(/^seg-r(\d+)-s(\d+)$/);
+    if (!m) return null;
+    return { ring: parseInt(m[1], 10), slice: parseInt(m[2], 10) };
   }
 
-  // Helps click+drag painting on touch devices
-  svg.style.touchAction = "none";
-
-  const segments = svg.querySelectorAll(".segment");
-  if (!segments.length) {
-    alert("Could not find any .segment paths inside the SVG.");
-    return;
-  }
-
-  // Index segments by slice + ring so we can "fill from center outward"
-// Expected id format: seg-r01-s1 ... seg-r10-s8
-const bySlice = new Map(); // slice -> Map(ring -> element)
-
-function parseSegId(id) {
-  // Returns { ring: 1..10, slice: 1..8 } or null
-  const m = /^seg-r(\d{2})-s(\d+)$/.exec(id || "");
-  if (!m) return null;
-  return { ring: parseInt(m[1], 10), slice: parseInt(m[2], 10) };
-}
-
-segments.forEach(seg => {
-  const info = parseSegId(seg.id);
-  if (!info) return;
-  if (!bySlice.has(info.slice)) bySlice.set(info.slice, new Map());
-  bySlice.get(info.slice).set(info.ring, seg);
-});
-
-function setSliceLevel(slice, levelRing, color) {
-  const ringMap = bySlice.get(slice);
-  if (!ringMap) return;
-
-  for (let r = 1; r <= 10; r++) {
-    const el = ringMap.get(r);
-    if (!el) continue;
-    if (r <= levelRing) {
-      // IMPORTANT: inline style overrides SVG default CSS fill
-      el.style.fill = color;
-    } else {
-      // Clear inline fill so it falls back to default (white)
-      el.style.fill = "";
+  function setSliceLevel(slice, level) {
+    const color = SLICE_COLOR[slice];
+    for (const el of segments) {
+      const p = parseId(el);
+      if (!p || p.slice !== slice) continue;
+      el.style.fill = (p.ring <= level) ? color : "#ffffff";
     }
   }
-}
 
-function clearSlice(slice) {
-  setSliceLevel(slice, 0, "");
-}
+  function resetAll() {
+    for (const el of segments) el.style.fill = "#ffffff";
+  }
 
-  // Make segments keyboard-focusable
-  segments.forEach(seg => {
-    seg.setAttribute("tabindex", "0");
-    seg.setAttribute("role", "button");
-    seg.setAttribute("aria-label", seg.id || "segment");
+  // Pointer events: click+drag to paint levels
+  let isDown = false;
 
-    // Basic click/tap paint
-    seg.addEventListener("click", (e) => {
-      const info = parseSegId(seg.id);
-      if (info) setSliceLevel(info.slice, info.ring, currentColor);
-    });
+  function handlePaint(target) {
+    const p = parseId(target);
+    if (!p) return;
+    setSliceLevel(p.slice, p.ring);
+  }
 
-    // Right-click to erase (desktop convenience)
-    seg.addEventListener("contextmenu", (e) => {
+  segments.forEach(el => {
+    el.setAttribute("tabindex", "0");
+    el.addEventListener("pointerdown", (e) => {
+      isDown = true;
+      el.setPointerCapture?.(e.pointerId);
+      handlePaint(el);
       e.preventDefault();
-      const info = parseSegId(seg.id);
-      if (info) clearSlice(info.slice);
     });
+    el.addEventListener("pointerenter", () => {
+      if (isDown) handlePaint(el);
+    });
+    el.addEventListener("pointerup", () => { isDown = false; });
+    el.addEventListener("pointercancel", () => { isDown = false; });
 
-    // Keyboard: Enter/Space paints; Delete/Backspace clears
-    seg.addEventListener("keydown", (e) => {
+    // keyboard support
+    el.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
+        handlePaint(el);
         e.preventDefault();
-        const info = parseSegId(seg.id);
-      if (info) setSliceLevel(info.slice, info.ring, currentColor);
-      } else if (e.key === "Backspace" || e.key === "Delete") {
-        e.preventDefault();
-        const info = parseSegId(seg.id);
-      if (info) clearSlice(info.slice);
       }
     });
   });
 
-  // Click + drag painting
-  let painting = false;
+  window.addEventListener("pointerup", () => { isDown = false; });
 
-  svg.addEventListener("pointerdown", (e) => {
-    const t = e.target;
-    if (t && t.classList && t.classList.contains("segment")) {
-      painting = true;
-      const info = parseSegId(t.id);
-      if (info) setSliceLevel(info.slice, info.ring, currentColor);
-      e.preventDefault();
-    }
-  });
+  document.getElementById("resetBtn").addEventListener("click", resetAll);
 
-  svg.addEventListener("pointermove", (e) => {
-    if (!painting) return;
-    const t = e.target;
-    if (t && t.classList && t.classList.contains("segment")) {
-      const info = parseSegId(t.id);
-      if (info) setSliceLevel(info.slice, info.ring, currentColor);
-    }
-  });
-
-  window.addEventListener("pointerup", () => { painting = false; });
-  window.addEventListener("pointercancel", () => { painting = false; });
-
-  // Fallback for older browsers without PointerEvent (some older iOS/Safari setups)
-  if (!("PointerEvent" in window)) {
-    let touchPainting = false;
-
-    function handleTouch(e) {
-      if (!e.touches || !e.touches.length) return;
-      const t = e.touches[0];
-      const el = document.elementFromPoint(t.clientX, t.clientY);
-      if (el && el.classList && el.classList.contains("segment")) {
-        const info = parseSegId(el.id);
-        if (info) setSliceLevel(info.slice, info.ring, currentColor);
-      }
-    }
-
-    svg.addEventListener("touchstart", (e) => {
-      touchPainting = true;
-      handleTouch(e);
-      e.preventDefault();
-    }, { passive: false });
-
-    svg.addEventListener("touchmove", (e) => {
-      if (!touchPainting) return;
-      handleTouch(e);
-      e.preventDefault();
-    }, { passive: false });
-
-    window.addEventListener("touchend", () => { touchPainting = false; }, { passive: true });
-    window.addEventListener("touchcancel", () => { touchPainting = false; }, { passive: true });
-  }
-
-  document.getElementById("resetBtn").addEventListener("click", () => {
-    segments.forEach(seg => { seg.style.fill = ""; });
-  });
-
+  // Download PNG
   document.getElementById("downloadBtn").addEventListener("click", () => {
-    // Serialize SVG -> draw to canvas -> download PNG
-    const serializer = new XMLSerializer();
-    const svgClone = svg.cloneNode(true);
-
-    // Ensure xmlns is present for serialization
-    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-
-    const svgString = serializer.serializeToString(svgClone);
-    const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+    const xml = new XMLSerializer().serializeToString(svg);
+    const svgBlob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
     const url = URL.createObjectURL(svgBlob);
 
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement("canvas");
-      const vb = svg.viewBox.baseVal;
-      canvas.width = (vb && vb.width) ? vb.width : svg.width.baseVal.value;
-      canvas.height = (vb && vb.height) ? vb.height : svg.height.baseVal.value;
-
+      canvas.width = 1400;
+      canvas.height = 1000;
       const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0);
 
       URL.revokeObjectURL(url);
 
-      canvas.toBlob((blob) => {
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "wellness-wheel.png";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-      }, "image/png");
+      const a = document.createElement("a");
+      a.download = "wellness-wheel.png";
+      a.href = canvas.toDataURL("image/png");
+      a.click();
     };
-
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      alert("Download failed in this browser. Try Chrome/Edge.");
-    };
-
     img.src = url;
   });
 })();
