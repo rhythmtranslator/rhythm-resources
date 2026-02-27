@@ -42,12 +42,15 @@
         <g>
           <rect id="groupHeaderRect" x="140" y="20" width="430" height="74" rx="20" ry="20" fill="#000000"></rect>
           <text id="groupHeaderText"
-      x="355" y="71"
+      x="355" y="56"
       fill="#ffffff"
       font-family="Arial, Helvetica, sans-serif"
-      font-size="44"
+      font-size="34"
       font-weight="700"
-      text-anchor="middle">Individual Reflection</text>
+      text-anchor="middle">
+  <tspan id="groupHeaderLine1" x="355" dy="0">Individual</tspan>
+  <tspan id="groupHeaderLine2" x="355" dy="30">Reflection</tspan>
+</text>
         </g>
 
         <!-- Right header -->
@@ -266,12 +269,15 @@
       </g>
        <!-- Optional Cycle/Campaign label (Bottom Left) -->
 <text id="cycleText"
-      x="40" y="985"
+      x="40" y="955"
       fill="#000000"
       font-family="Arial, Helvetica, sans-serif"
       font-size="22"
       font-weight="700"
-      text-anchor="start"></text> 
+      text-anchor="start">
+  <tspan id="cycleLine1" x="40" dy="0"></tspan>
+  <tspan id="cycleLine2" x="40" dy="26"></tspan>
+</text>
     <!-- ===== Footer Brand (Bottom Right) ===== -->
 <g id="footerBrand">
   <!-- Logo moved to bottom-right (keep id="hourLogo" so PNG export embedding still works) -->
@@ -370,6 +376,107 @@ const group_label = truncateLabel(
 
 const cycle_id = getParam(qs, "cycle_id").trim();
 const source_tool = "360_wheel_v1";
+    // ---- Two-line SVG wrapping helpers ----
+function splitCandidates(label) {
+  const s = (label || "").trim();
+  if (!s) return [{ a: "", b: "" }];
+
+  // Prefer splitting on spaces; then hyphens; else fallback to midpoint.
+  const seps = s.includes(" ") ? [" "] : (s.includes("-") ? ["-"] : []);
+  const out = [];
+
+  if (seps.length) {
+    const sep = seps[0];
+    const parts = s.split(sep);
+
+    // Build candidate split points near the middle for best balance.
+    const mid = Math.floor(parts.length / 2);
+    const offsets = [0, -1, 1, -2, 2, -3, 3];
+
+    for (const off of offsets) {
+      const i = mid + off;
+      if (i <= 0 || i >= parts.length) continue;
+
+      const a = parts.slice(0, i).join(sep).trim();
+      const b = parts.slice(i).join(sep).trim();
+      out.push({ a, b });
+    }
+  } else {
+    // Hard fallback: character midpoint
+    const m = Math.floor(s.length / 2);
+    out.push({ a: s.slice(0, m).trim(), b: s.slice(m).trim() });
+  }
+
+  // Always include first/last-ish fallbacks
+  out.push({ a: s.slice(0, 28).trim(), b: s.slice(28).trim() });
+  return out.filter(x => x.a || x.b);
+}
+
+function ellipsizeToWidth(tspanEl, maxWidth) {
+  let txt = (tspanEl.textContent || "").trim();
+  if (!txt) return;
+
+  // If already fits, done.
+  if (tspanEl.getComputedTextLength() <= maxWidth) return;
+
+  // Trim until it fits, then add ellipsis.
+  while (txt.length > 0 && tspanEl.getComputedTextLength() > maxWidth) {
+    txt = txt.slice(0, -1);
+    tspanEl.textContent = txt + "…";
+  }
+}
+
+function setTwoLineWrappedText({ line1El, line2El, rectEl, label, padding = 28 }) {
+  if (!line1El || !line2El) return;
+
+  const full = (label || "").trim();
+  if (!full) {
+    line1El.textContent = "";
+    line2El.textContent = "";
+    return;
+  }
+
+  const maxWidth = rectEl
+    ? (Number(rectEl.getAttribute("width")) - padding)
+    : 520; // fallback max width if no rect provided
+
+  // Try balanced splits first.
+  const cands = splitCandidates(full);
+
+  let best = null;
+  let bestScore = Infinity;
+
+  for (const c of cands) {
+    line1El.textContent = c.a;
+    line2El.textContent = c.b;
+
+    const w1 = line1El.getComputedTextLength();
+    const w2 = line2El.getComputedTextLength();
+
+    // Penalize overflow heavily; otherwise prefer balanced lines.
+    const overflow = Math.max(0, w1 - maxWidth) + Math.max(0, w2 - maxWidth);
+    const balance = Math.abs(w1 - w2);
+    const score = overflow * 1000 + balance;
+
+    if (score < bestScore) {
+      bestScore = score;
+      best = { ...c, w1, w2 };
+      if (overflow === 0 && balance < 20) break; // good enough early exit
+    }
+  }
+
+  // Apply the best split
+  line1El.textContent = best?.a || full;
+  line2El.textContent = best?.b || "";
+
+  // If either line still overflows, ellipsize the second line first
+  if (line2El.textContent) {
+    ellipsizeToWidth(line2El, maxWidth);
+  }
+
+  // If line1 still overflows (rare), ellipsize it too
+  ellipsizeToWidth(line1El, maxWidth);
+}
 function fitTextToRect(textEl, rectEl, padding = 28, minFontSize = 20) {
   if (!textEl || !rectEl) return;
 
@@ -391,17 +498,38 @@ function fitTextToRect(textEl, rectEl, padding = 28, minFontSize = 20) {
     textEl.style.fontSize = `${fontSize}px`;
   }
 }
-// Update masthead SVG text
-const groupHeaderText = document.getElementById("groupHeaderText");
+// ---- Apply Group label into masthead left header (2-line wrap) ----
 const groupHeaderRect = document.getElementById("groupHeaderRect");
-if (groupHeaderText) {
-  groupHeaderText.textContent = group_label;
-  fitTextToRect(groupHeaderText, groupHeaderRect, 28, 20);
-}
+const groupLine1 = document.getElementById("groupHeaderLine1");
+const groupLine2 = document.getElementById("groupHeaderLine2");
 
-// Update optional cycle/campaign text (bottom-left)
-const cycleText = document.getElementById("cycleText");
-if (cycleText) cycleText.textContent = cycle_id ? `Cycle: ${cycle_id}` : "";
+setTwoLineWrappedText({
+  line1El: groupLine1,
+  line2El: groupLine2,
+  rectEl: groupHeaderRect,
+  label: group_label,
+  padding: 28
+});
+
+// ---- Apply Cycle value (2-line wrap) ----
+// No "Cycle:" prefix (format B). If empty, show nothing.
+const cycleLine1 = document.getElementById("cycleLine1");
+const cycleLine2 = document.getElementById("cycleLine2");
+
+if (!cycle_id) {
+  if (cycleLine1) cycleLine1.textContent = "";
+  if (cycleLine2) cycleLine2.textContent = "";
+} else {
+  // Use a simple wrap width for bottom-left. No rect there, so we use a max width value.
+  // 520 works well visually without running into the far right branding area.
+  setTwoLineWrappedText({
+    line1El: cycleLine1,
+    line2El: cycleLine2,
+    rectEl: null,
+    label: cycle_id,
+    padding: 0
+  });
+}
 // Update toolbar pill
 
 
