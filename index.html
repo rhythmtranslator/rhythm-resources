@@ -18,11 +18,21 @@
 <body>
 <div class="wrap">
   <div class="toolbar">
-    <div class="hint"><b>Click a ring in a slice</b> (fills from center up to that level; clears above)</div>
-    <div style="flex: 1;"></div>
-    <button id="resetBtn" type="button">Reset</button>
-    <button id="downloadBtn" type="button">Download PNG</button>
+  <div class="hint"><b>Click a ring in a slice</b> (fills from center up to that level; clears above)</div>
+
+  <!-- Shows which container this review belongs to -->
+  <div id="groupPill"
+       style="padding:10px 12px; border:2px solid #000; border-radius:999px; font-weight:700; background:#fff;">
+    Group: Individual Reflection
   </div>
+
+  <button id="submitBtn" type="button">Submit</button>
+  <span id="submitStatus" style="font-weight:700;"></span>
+
+  <div style="flex: 1;"></div>
+  <button id="resetBtn" type="button">Reset</button>
+  <button id="downloadBtn" type="button">Download PNG</button>
+</div>
 
   <div class="svgbox">
     <svg height="1000" id="wheelSvg" viewBox="0 -80 1400 1080" width="1400"
@@ -55,6 +65,16 @@
                 font-weight="700"
                 text-anchor="middle">360 Reality Review</text>
         </g>
+          <!-- Dynamic group label (set via URL params in JS) -->
+<text id="groupHeaderText"
+      x="700" y="120"
+      fill="#000000"
+      font-family="Arial, Helvetica, sans-serif"
+      font-size="28"
+      font-weight="700"
+      text-anchor="middle">
+  Individual Reflection
+</text>
 
         <!-- Logo (uses your real PNG file in the repo) -->
         <!-- Upload: "HOUR Transparent Logo.png" next to index.html -->
@@ -264,7 +284,35 @@
     </svg>
   </div>
 </div>
+<!-- Hidden form used to submit data to Apps Script without CORS issues -->
+<iframe name="wheelSubmitFrame" style="display:none;"></iframe>
 
+<form id="wheelSubmitForm"
+      method="POST"
+      target="wheelSubmitFrame"
+      style="display:none;"
+      action="https://script.google.com/macros/s/AKfycbwz6FS_ndj3XORkzhp_olG3fivUV-sIuLdn6Iab7Eis8S1TWgwBEMLlnF5qOzCAgdyong/exec">
+
+  <input name="timestamp_iso" id="f_timestamp_iso">
+
+  <input name="group_id" id="f_group_id">
+  <input name="group_type" id="f_group_type">
+  <input name="group_label" id="f_group_label">
+  <input name="cycle_id" id="f_cycle_id">
+  <input name="source_tool" id="f_source_tool">
+
+  <input name="work" id="f_work">
+  <input name="social" id="f_social">
+  <input name="surroundings" id="f_surroundings">
+  <input name="physical" id="f_physical">
+  <input name="financial" id="f_financial">
+  <input name="spiritual" id="f_spiritual">
+  <input name="learning" id="f_learning">
+  <input name="emotional" id="f_emotional">
+
+  <input name="total_score" id="f_total_score">
+  <input name="page_url" id="f_page_url">
+</form>
 <script>
 (() => {
   // Fixed slice colors
@@ -281,6 +329,42 @@
 
   const svg = document.getElementById("wheelSvg");
   const segments = Array.from(svg.querySelectorAll(".segment"));
+    // Keep current level per slice so we can submit scores
+// Slice order: 1 Work, 2 Social, 3 Surroundings, 4 Physical, 5 Financial, 6 Spiritual, 7 Learning, 8 Emotional
+const sliceLevel = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0};
+    function getParam(qs, key) {
+  const v = qs.get(key);
+  return (v === null || v === undefined) ? "" : String(v);
+}
+
+function truncateLabel(s, maxLen = 48) {
+  const t = (s || "").trim();
+  if (t.length <= maxLen) return t;
+  return t.slice(0, maxLen - 1) + "…";
+}
+
+const qs = new URLSearchParams(window.location.search);
+
+const group_id = (getParam(qs, "group_id").trim() || "INDIVIDUAL");
+
+const group_type = (getParam(qs, "group_type").trim() ||
+  (group_id === "INDIVIDUAL" ? "Individual" : "Group"));
+
+const group_label_raw = getParam(qs, "group_label").trim();
+const group_label = truncateLabel(
+  group_label_raw || (group_id === "INDIVIDUAL" ? "Individual Reflection" : group_id)
+);
+
+const cycle_id = getParam(qs, "cycle_id").trim();
+const source_tool = "360_wheel_v1";
+
+// Update masthead SVG text
+const groupHeaderText = document.getElementById("groupHeaderText");
+if (groupHeaderText) groupHeaderText.textContent = group_label;
+
+// Update toolbar pill
+const groupPill = document.getElementById("groupPill");
+if (groupPill) groupPill.textContent = `Group: ${group_label}`;
 
   function parseId(el) {
     const m = (el.id || "").match(/^seg-r(\d+)-s(\d+)$/);
@@ -289,17 +373,24 @@
   }
 
   function setSliceLevel(slice, level) {
-    const color = SLICE_COLOR[slice];
-    for (const el of segments) {
-      const p = parseId(el);
-      if (!p || p.slice !== slice) continue;
-      el.style.fill = (p.ring <= level) ? color : "#ffffff";
-    }
+  sliceLevel[slice] = level;
+
+  const color = SLICE_COLOR[slice];
+  for (const el of segments) {
+    const p = parseId(el);
+    if (!p || p.slice !== slice) continue;
+    el.style.fill = (p.ring <= level) ? color : "#ffffff";
   }
+}
 
   function resetAll() {
-    for (const el of segments) el.style.fill = "#ffffff";
-  }
+  for (const el of segments) el.style.fill = "#ffffff";
+  for (const k in sliceLevel) sliceLevel[k] = 0;
+
+  // Clear submit UI
+  const submitStatus = document.getElementById("submitStatus");
+  if (submitStatus) submitStatus.textContent = "";
+}
 
   // Pointer events: click+drag to paint levels
   let isDown = false;
@@ -390,6 +481,75 @@
   };
   img.src = url;
 });
+    // ---- Submit to Google Sheet via hidden form ----
+const submitBtn = document.getElementById("submitBtn");
+const submitStatus = document.getElementById("submitStatus");
+const submitForm = document.getElementById("wheelSubmitForm");
+
+function computeScores() {
+  const work = sliceLevel[1] || 0;
+  const social = sliceLevel[2] || 0;
+  const surroundings = sliceLevel[3] || 0;
+  const physical = sliceLevel[4] || 0;
+  const financial = sliceLevel[5] || 0;
+  const spiritual = sliceLevel[6] || 0;
+  const learning = sliceLevel[7] || 0;
+  const emotional = sliceLevel[8] || 0;
+  const total = work + social + surroundings + physical + financial + spiritual + learning + emotional;
+  return { work, social, surroundings, physical, financial, spiritual, learning, emotional, total };
+}
+
+function anySelectionMade() {
+  for (const k in sliceLevel) {
+    if ((sliceLevel[k] || 0) > 0) return true;
+  }
+  return false;
+}
+
+if (submitBtn && submitForm) {
+  submitBtn.addEventListener("click", () => {
+    // Optional: prevent empty submissions
+    if (!anySelectionMade()) {
+      submitStatus.textContent = "Select at least one level before submitting.";
+      submitStatus.style.color = "#E53935";
+      return;
+    }
+
+    const ts = new Date().toISOString();
+    const s = computeScores();
+
+    document.getElementById("f_timestamp_iso").value = ts;
+
+    document.getElementById("f_group_id").value = group_id;
+    document.getElementById("f_group_type").value = group_type;
+    document.getElementById("f_group_label").value = group_label;
+    document.getElementById("f_cycle_id").value = cycle_id;
+    document.getElementById("f_source_tool").value = source_tool;
+
+    document.getElementById("f_work").value = s.work;
+    document.getElementById("f_social").value = s.social;
+    document.getElementById("f_surroundings").value = s.surroundings;
+    document.getElementById("f_physical").value = s.physical;
+    document.getElementById("f_financial").value = s.financial;
+    document.getElementById("f_spiritual").value = s.spiritual;
+    document.getElementById("f_learning").value = s.learning;
+    document.getElementById("f_emotional").value = s.emotional;
+
+    document.getElementById("f_total_score").value = s.total;
+    document.getElementById("f_page_url").value = window.location.href;
+
+    // Submit (cross-origin; we confirm optimistically)
+    submitForm.submit();
+
+    // UI feedback
+    submitStatus.textContent = "Submitted ✓";
+    submitStatus.style.color = "#2E7D32";
+
+    // Simple anti-double-click protection
+    submitBtn.disabled = true;
+    setTimeout(() => { submitBtn.disabled = false; }, 1500);
+  });
+}
 })();
 </script>
 </body>
