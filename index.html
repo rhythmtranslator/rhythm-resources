@@ -472,7 +472,6 @@ function setTwoLineWrappedText({ line1El, line2El, rectEl, label, padding = 28 }
     if (score < bestScore) {
       bestScore = score;
       best = { ...c, w1, w2 };
-      if (overflow === 0 && balance < 20) break; // good enough early exit
     }
   }
 
@@ -518,7 +517,7 @@ const groupHeaderMulti = document.getElementById("groupHeaderMulti");
 const groupLine1 = document.getElementById("groupHeaderLine1");
 const groupLine2 = document.getElementById("groupHeaderLine2");
 
-const HEADER_PADDING = 36; // padding inside pill
+const HEADER_PADDING = 16; // padding inside pill
 
 function show(el, yes) {
   if (!el) return;
