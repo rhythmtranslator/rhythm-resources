@@ -367,23 +367,9 @@ const sliceLevel = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0};
   return (v === null || v === undefined) ? "" : String(v);
 }
 
-function truncateLabel(s, maxLen = 48) {
-  const t = (s || "").trim();
-  if (t.length <= maxLen) return t;
-  return t.slice(0, maxLen - 1) + "…";
-}
-
-const qs = new URLSearchParams(window.location.search);
-
-const group_id = (getParam(qs, "group_id").trim() || "INDIVIDUAL");
-
-const group_type = (getParam(qs, "group_type").trim() ||
-  (group_id === "INDIVIDUAL" ? "Individual" : "Group"));
-
 const group_label_raw = getParam(qs, "group_label").trim();
-const group_label = truncateLabel(
-  group_label_raw || (group_id === "INDIVIDUAL" ? "Individual Reflection" : group_id)
-);
+const group_label =
+  group_label_raw || (group_id === "INDIVIDUAL" ? "Individual Reflection" : group_id);
 
 const cycle_id = getParam(qs, "cycle_id").trim();
 const source_tool = "360_wheel_v1";
