@@ -364,15 +364,31 @@
 const sliceLevel = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0};
     function getParam(qs, key) {
   const v = qs.get(key);
-  return (v === null || v === undefined) ? "" : String(v);
+  return (v === null || v === undefined) ? "" : String(v).trim();
 }
 
-const group_label_raw = getParam(qs, "group_label").trim();
+// ✅ Define qs FIRST
+const qs = new URLSearchParams(window.location.search);
+
+// ✅ Define group_id / group_type FIRST
+const group_id = getParam(qs, "group_id") || "INDIVIDUAL";
+
+const group_type =
+  getParam(qs, "group_type") || (group_id === "INDIVIDUAL" ? "Individual" : "Group");
+
+// ✅ Do NOT truncate group label here (keep full label)
+const group_label_raw = getParam(qs, "group_label");
 const group_label =
   group_label_raw || (group_id === "INDIVIDUAL" ? "Individual Reflection" : group_id);
 
-const cycle_id = getParam(qs, "cycle_id").trim();
+// ✅ Cycle (optional)
+const cycle_id = getParam(qs, "cycle_id");
+
+// ✅ Constant
 const source_tool = "360_wheel_v1";
+
+// Optional: quick debug while testing (remove later if you want)
+console.log("PARAMS:", { group_id, group_type, group_label, cycle_id });
     // ---- Two-line SVG wrapping helpers ----
 function splitCandidates(label) {
   const s = (label || "").trim();
