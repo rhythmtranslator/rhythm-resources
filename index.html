@@ -70,9 +70,9 @@
           <text x="1115" y="71"
                 fill="#ffffff"
                 font-family="Arial, Helvetica, sans-serif"
-                font-size="44"
+                font-size="36"
                 font-weight="700"
-                text-anchor="middle"> Real Wheel Power </text>
+                text-anchor="middle"> Wheel Power Reflections </text>
         </g>
           <!-- Dynamic group label (set via URL params in JS) -->
 
@@ -329,7 +329,16 @@
   <input name="group_type" id="f_group_type">
   <input name="group_label" id="f_group_label">
   <input name="cycle_id" id="f_cycle_id">
-  <input name="source_tool" id="f_source_tool">
+    <input name="source_tool" id="f_source_tool">
+
+  <!-- NEW: steward email is passed in URL as ?steward=... but stored as user_email -->
+  <input name="user_email" id="f_user_email">
+
+  <!-- NEW: 4 rollup fields -->
+  <input name="care" id="f_care">
+  <input name="pacing" id="f_pacing">
+  <input name="trust" id="f_trust">
+  <input name="alignment" id="f_alignment">
 
   <input name="work" id="f_work">
   <input name="social" id="f_social">
@@ -386,6 +395,9 @@ const cycle_id = getParam(qs, "cycle_id");
 
 // ✅ Constant
 const source_tool = "wheel_power_v1";
+
+// ✅ NEW: steward from URL (we store it as user_email in the submission payload)
+const steward = getParam(qs, "steward");
 
 // Optional: quick debug while testing (remove later if you want)
 console.log("PARAMS:", { group_id, group_type, group_label, cycle_id });
@@ -761,7 +773,21 @@ if (submitBtn && submitForm) {
     document.getElementById("f_group_type").value = group_type;
     document.getElementById("f_group_label").value = group_label;
     document.getElementById("f_cycle_id").value = cycle_id;
-    document.getElementById("f_source_tool").value = source_tool;
+        document.getElementById("f_source_tool").value = source_tool;
+
+    // NEW: steward param mapped into user_email field (sheet column stays user_email)
+    document.getElementById("f_user_email").value = steward || "";
+
+    // NEW: rollups (averages)
+    const care = (s.emotional + s.physical) / 2;
+    const pacing = (s.learning + s.surroundings) / 2;
+    const trust = (s.spiritual + s.social) / 2;
+    const alignment = (s.financial + s.work) / 2;
+
+    document.getElementById("f_care").value = care;
+    document.getElementById("f_pacing").value = pacing;
+    document.getElementById("f_trust").value = trust;
+    document.getElementById("f_alignment").value = alignment;
 
     document.getElementById("f_work").value = s.work;
     document.getElementById("f_social").value = s.social;
