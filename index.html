@@ -1,793 +1,106 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Wellness Wheel Coloring (80 Sections)</title>
-<style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .wrap { display: grid; grid-template-columns: 1fr; gap: 14px; max-width: 1100px; margin: 0 auto; }
-    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-    button { padding: 10px 14px; border: 2px solid #000; background: #fff; border-radius: 10px; cursor: pointer; font-weight: 700; }
-    button:active { transform: translateY(1px); }
-    .hint { font-size: 14px; color: #333; line-height: 1.3; }
-    .svgbox { border: 2px solid #000; border-radius: 14px; padding: 10px; background: #fff; overflow: auto; }
-    .svgbox svg { width: 100%; height: auto; display: block; }
-</style>
-</head>
-<body>
-<div class="wrap">
-  <div class="toolbar">
-  <div class="hint"><b>Click a ring in a slice</b> (fills from center up to that level; clears above)</div>
+<!-- ============================= -->
+<!-- WHEEL POWER REFLECTIONS TOOL -->
+<!-- ============================= -->
 
-  <div style="flex: 1;"></div>
-
-  <button id="resetBtn" type="button">Reset</button>
-  <button id="downloadBtn" type="button">Save a copy</button>
-  <button id="submitBtn" type="button">Submit</button>
-  <span id="submitStatus" style="font-weight:700;"></span>
-</div>
-
-  <div class="svgbox">
-    <svg height="1000" id="wheelSvg" viewBox="0 -80 1400 1080" width="1400"
-         xmlns="http://www.w3.org/2000/svg"
-         xmlns:xlink="http://www.w3.org/1999/xlink">
-      <title>Wellness Wheel - 10 Rings x 8 Segments (80 colorable sections)</title>
-
-      <rect fill="#ffffff" height="1000" width="1400" x="0" y="0"></rect>
-
-      <!-- ===== Masthead (Headers + Logo + 4 Questions) ===== -->
-      <g id="masthead" transform="translate(0,-60)">
-        <!-- Left header -->
-        <g>
-          <rect id="groupHeaderRect" x="120" y="20" width="720" height="74" rx="20" ry="20" fill="#000000"></rect>
-          <!-- Group header: single-line (default) -->
-<text id="groupHeaderSingle"
-      x="480" y="71"
-      fill="#ffffff"
-      font-family="Arial, Helvetica, sans-serif"
-      font-size="44"
-      font-weight="700"
-      text-anchor="middle">Individual Reflection</text>
-
-<!-- Group header: two-line (shown only when needed) -->
-<text id="groupHeaderMulti"
-      x="480" y="56"
-      fill="#ffffff"
-      font-family="Arial, Helvetica, sans-serif"
-      font-size="34"
-      font-weight="700"
-      text-anchor="middle"
-      style="display:none;">
-  <tspan id="groupHeaderLine1" x="480" dy="0">Individual</tspan>
-  <tspan id="groupHeaderLine2" x="480" dy="30">Reflection</tspan>
-</text>
-        </g>
-
-        <!-- Right header -->
-        <g>
-          <rect x="880" y="20" width="470" height="74" rx="20" ry="20" fill="#000000"></rect>
-          <text x="1115" y="71"
-                fill="#ffffff"
-                font-family="Arial, Helvetica, sans-serif"
-                font-size="44"
-                font-weight="700"
-                text-anchor="middle"> Real Wheel Power </text>
-        </g>
-          <!-- Dynamic group label (set via URL params in JS) -->
-
-        <!-- Logo (uses your real PNG file in the repo) -->
-        <!-- Upload: "HOUR Transparent Logo.png" next to index.html -->
-        
-
-        <!-- 4 questions pills (upper right) -->
-        <g id="questions" transform="translate(980,110)">
-          <g>
-            <rect x="0" y="0" width="360" height="40" rx="12" ry="12" fill="#0B4DBA"></rect>
-            <text x="18" y="27" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">
-              1) Is it healthy to be here?
-            </text>
-          </g>
-          <g transform="translate(0,46)">
-            <rect x="0" y="0" width="360" height="40" rx="12" ry="12" fill="#F9D400"></rect>
-            <text x="18" y="27" fill="#000000" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">
-              2) Can this continue?
-            </text>
-          </g>
-          <g transform="translate(0,92)">
-            <rect x="0" y="0" width="360" height="40" rx="12" ry="12" fill="#E53935"></rect>
-            <text x="18" y="27" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">
-              3) Are we together?
-            </text>
-          </g>
-          <g transform="translate(0,138)">
-            <rect x="0" y="0" width="360" height="40" rx="12" ry="12" fill="#2E7D32"></rect>
-            <text x="18" y="27" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">
-              4) Do we know how this works?
-            </text>
-          </g>
-        </g>
-      </g>
-      <!-- ===== End Masthead ===== -->
-
-      <style>
-        .segment { fill: #ffffff; cursor: pointer; stroke: transparent; stroke-width: 3; transition: filter 120ms ease, opacity 120ms ease; }
-        .segment:hover { stroke: #000; opacity: 0.92; filter: drop-shadow(0px 0px 4px rgba(0,0,0,0.35)); }
-        .decor { pointer-events: none; }
-      </style>
-
-      <g id="wheel" transform="translate(700,520)">
-        <g id="segments">
-          <path class="segment" d="M 0.000 -38.000 A 38.000 38.000 0 0 1 26.870 -26.870 L 0 0 Z" id="seg-r01-s1"></path>
-          <path class="segment" d="M 26.870 -26.870 A 38.000 38.000 0 0 1 38.000 0.000 L 0 0 Z" id="seg-r01-s2"></path>
-          <path class="segment" d="M 38.000 0.000 A 38.000 38.000 0 0 1 26.870 26.870 L 0 0 Z" id="seg-r01-s3"></path>
-          <path class="segment" d="M 26.870 26.870 A 38.000 38.000 0 0 1 0.000 38.000 L 0 0 Z" id="seg-r01-s4"></path>
-          <path class="segment" d="M 0.000 38.000 A 38.000 38.000 0 0 1 -26.870 26.870 L 0 0 Z" id="seg-r01-s5"></path>
-          <path class="segment" d="M -26.870 26.870 A 38.000 38.000 0 0 1 -38.000 0.000 L 0 0 Z" id="seg-r01-s6"></path>
-          <path class="segment" d="M -38.000 0.000 A 38.000 38.000 0 0 1 -26.870 -26.870 L 0 0 Z" id="seg-r01-s7"></path>
-          <path class="segment" d="M -26.870 -26.870 A 38.000 38.000 0 0 1 -0.000 -38.000 L 0 0 Z" id="seg-r01-s8"></path>
-
-          <path class="segment" d="M 0.000 -76.000 A 76.000 76.000 0 0 1 53.740 -53.740 L 26.870 -26.870 A 38.000 38.000 0 0 0 0.000 -38.000 Z" id="seg-r02-s1"></path>
-          <path class="segment" d="M 53.740 -53.740 A 76.000 76.000 0 0 1 76.000 0.000 L 38.000 0.000 A 38.000 38.000 0 0 0 26.870 -26.870 Z" id="seg-r02-s2"></path>
-          <path class="segment" d="M 76.000 0.000 A 76.000 76.000 0 0 1 53.740 53.740 L 26.870 26.870 A 38.000 38.000 0 0 0 38.000 0.000 Z" id="seg-r02-s3"></path>
-          <path class="segment" d="M 53.740 53.740 A 76.000 76.000 0 0 1 0.000 76.000 L 0.000 38.000 A 38.000 38.000 0 0 0 26.870 26.870 Z" id="seg-r02-s4"></path>
-          <path class="segment" d="M 0.000 76.000 A 76.000 76.000 0 0 1 -53.740 53.740 L -26.870 26.870 A 38.000 38.000 0 0 0 0.000 38.000 Z" id="seg-r02-s5"></path>
-          <path class="segment" d="M -53.740 53.740 A 76.000 76.000 0 0 1 -76.000 0.000 L -38.000 0.000 A 38.000 38.000 0 0 0 -26.870 26.870 Z" id="seg-r02-s6"></path>
-          <path class="segment" d="M -76.000 0.000 A 76.000 76.000 0 0 1 -53.740 -53.740 L -26.870 -26.870 A 38.000 38.000 0 0 0 -38.000 0.000 Z" id="seg-r02-s7"></path>
-          <path class="segment" d="M -53.740 -53.740 A 76.000 76.000 0 0 1 -0.000 -76.000 L -0.000 -38.000 A 38.000 38.000 0 0 0 -26.870 -26.870 Z" id="seg-r02-s8"></path>
-
-          <path class="segment" d="M 0.000 -114.000 A 114.000 114.000 0 0 1 80.610 -80.610 L 53.740 -53.740 A 76.000 76.000 0 0 0 0.000 -76.000 Z" id="seg-r03-s1"></path>
-          <path class="segment" d="M 80.610 -80.610 A 114.000 114.000 0 0 1 114.000 0.000 L 76.000 0.000 A 76.000 76.000 0 0 0 53.740 -53.740 Z" id="seg-r03-s2"></path>
-          <path class="segment" d="M 114.000 0.000 A 114.000 114.000 0 0 1 80.610 80.610 L 53.740 53.740 A 76.000 76.000 0 0 0 76.000 0.000 Z" id="seg-r03-s3"></path>
-          <path class="segment" d="M 80.610 80.610 A 114.000 114.000 0 0 1 0.000 114.000 L 0.000 76.000 A 76.000 76.000 0 0 0 53.740 53.740 Z" id="seg-r03-s4"></path>
-          <path class="segment" d="M 0.000 114.000 A 114.000 114.000 0 0 1 -80.610 80.610 L -53.740 53.740 A 76.000 76.000 0 0 0 0.000 76.000 Z" id="seg-r03-s5"></path>
-          <path class="segment" d="M -80.610 80.610 A 114.000 114.000 0 0 1 -114.000 0.000 L -76.000 0.000 A 76.000 76.000 0 0 0 -53.740 53.740 Z" id="seg-r03-s6"></path>
-          <path class="segment" d="M -114.000 0.000 A 114.000 114.000 0 0 1 -80.610 -80.610 L -53.740 -53.740 A 76.000 76.000 0 0 0 -76.000 0.000 Z" id="seg-r03-s7"></path>
-          <path class="segment" d="M -80.610 -80.610 A 114.000 114.000 0 0 1 -0.000 -114.000 L -0.000 -76.000 A 76.000 76.000 0 0 0 -53.740 -53.740 Z" id="seg-r03-s8"></path>
-
-          <path class="segment" d="M 0.000 -152.000 A 152.000 152.000 0 0 1 107.480 -107.480 L 80.610 -80.610 A 114.000 114.000 0 0 0 0.000 -114.000 Z" id="seg-r04-s1"></path>
-          <path class="segment" d="M 107.480 -107.480 A 152.000 152.000 0 0 1 152.000 0.000 L 114.000 0.000 A 114.000 114.000 0 0 0 80.610 -80.610 Z" id="seg-r04-s2"></path>
-          <path class="segment" d="M 152.000 0.000 A 152.000 152.000 0 0 1 107.480 107.480 L 80.610 80.610 A 114.000 114.000 0 0 0 114.000 0.000 Z" id="seg-r04-s3"></path>
-          <path class="segment" d="M 107.480 107.480 A 152.000 152.000 0 0 1 0.000 152.000 L 0.000 114.000 A 114.000 114.000 0 0 0 80.610 80.610 Z" id="seg-r04-s4"></path>
-          <path class="segment" d="M 0.000 152.000 A 152.000 152.000 0 0 1 -107.480 107.480 L -80.610 80.610 A 114.000 114.000 0 0 0 0.000 114.000 Z" id="seg-r04-s5"></path>
-          <path class="segment" d="M -107.480 107.480 A 152.000 152.000 0 0 1 -152.000 0.000 L -114.000 0.000 A 114.000 114.000 0 0 0 -80.610 80.610 Z" id="seg-r04-s6"></path>
-          <path class="segment" d="M -152.000 0.000 A 152.000 152.000 0 0 1 -107.480 -107.480 L -80.610 -80.610 A 114.000 114.000 0 0 0 -114.000 0.000 Z" id="seg-r04-s7"></path>
-          <path class="segment" d="M -107.480 -107.480 A 152.000 152.000 0 0 1 -0.000 -152.000 L -0.000 -114.000 A 114.000 114.000 0 0 0 -80.610 -80.610 Z" id="seg-r04-s8"></path>
-
-          <path class="segment" d="M 0.000 -190.000 A 190.000 190.000 0 0 1 134.350 -134.350 L 107.480 -107.480 A 152.000 152.000 0 0 0 0.000 -152.000 Z" id="seg-r05-s1"></path>
-          <path class="segment" d="M 134.350 -134.350 A 190.000 190.000 0 0 1 190.000 0.000 L 152.000 0.000 A 152.000 152.000 0 0 0 107.480 -107.480 Z" id="seg-r05-s2"></path>
-          <path class="segment" d="M 190.000 0.000 A 190.000 190.000 0 0 1 134.350 134.350 L 107.480 107.480 A 152.000 152.000 0 0 0 152.000 0.000 Z" id="seg-r05-s3"></path>
-          <path class="segment" d="M 134.350 134.350 A 190.000 190.000 0 0 1 0.000 190.000 L 0.000 152.000 A 152.000 152.000 0 0 0 107.480 107.480 Z" id="seg-r05-s4"></path>
-          <path class="segment" d="M 0.000 190.000 A 190.000 190.000 0 0 1 -134.350 134.350 L -107.480 107.480 A 152.000 152.000 0 0 0 0.000 152.000 Z" id="seg-r05-s5"></path>
-          <path class="segment" d="M -134.350 134.350 A 190.000 190.000 0 0 1 -190.000 0.000 L -152.000 0.000 A 152.000 152.000 0 0 0 -107.480 107.480 Z" id="seg-r05-s6"></path>
-          <path class="segment" d="M -190.000 0.000 A 190.000 190.000 0 0 1 -134.350 -134.350 L -107.480 -107.480 A 152.000 152.000 0 0 0 -152.000 0.000 Z" id="seg-r05-s7"></path>
-          <path class="segment" d="M -134.350 -134.350 A 190.000 190.000 0 0 1 -0.000 -190.000 L -0.000 -152.000 A 152.000 152.000 0 0 0 -107.480 -107.480 Z" id="seg-r05-s8"></path>
-
-          <path class="segment" d="M 0.000 -228.000 A 228.000 228.000 0 0 1 161.220 -161.220 L 134.350 -134.350 A 190.000 190.000 0 0 0 0.000 -190.000 Z" id="seg-r06-s1"></path>
-          <path class="segment" d="M 161.220 -161.220 A 228.000 228.000 0 0 1 228.000 0.000 L 190.000 0.000 A 190.000 190.000 0 0 0 134.350 -134.350 Z" id="seg-r06-s2"></path>
-          <path class="segment" d="M 228.000 0.000 A 228.000 228.000 0 0 1 161.220 161.220 L 134.350 134.350 A 190.000 190.000 0 0 0 190.000 0.000 Z" id="seg-r06-s3"></path>
-          <path class="segment" d="M 161.220 161.220 A 228.000 228.000 0 0 1 0.000 228.000 L 0.000 190.000 A 190.000 190.000 0 0 0 134.350 134.350 Z" id="seg-r06-s4"></path>
-          <path class="segment" d="M 0.000 228.000 A 228.000 228.000 0 0 1 -161.220 161.220 L -134.350 134.350 A 190.000 190.000 0 0 0 0.000 190.000 Z" id="seg-r06-s5"></path>
-          <path class="segment" d="M -161.220 161.220 A 228.000 228.000 0 0 1 -228.000 0.000 L -190.000 0.000 A 190.000 190.000 0 0 0 -134.350 134.350 Z" id="seg-r06-s6"></path>
-          <path class="segment" d="M -228.000 0.000 A 228.000 228.000 0 0 1 -161.220 -161.220 L -134.350 -134.350 A 190.000 190.000 0 0 0 -190.000 0.000 Z" id="seg-r06-s7"></path>
-          <path class="segment" d="M -161.220 -161.220 A 228.000 228.000 0 0 1 -0.000 -228.000 L -0.000 -190.000 A 190.000 190.000 0 0 0 -134.350 -134.350 Z" id="seg-r06-s8"></path>
-
-          <path class="segment" d="M 0.000 -266.000 A 266.000 266.000 0 0 1 188.090 -188.090 L 161.220 -161.220 A 228.000 228.000 0 0 0 0.000 -228.000 Z" id="seg-r07-s1"></path>
-          <path class="segment" d="M 188.090 -188.090 A 266.000 266.000 0 0 1 266.000 0.000 L 228.000 0.000 A 228.000 228.000 0 0 0 161.220 -161.220 Z" id="seg-r07-s2"></path>
-          <path class="segment" d="M 266.000 0.000 A 266.000 266.000 0 0 1 188.090 188.090 L 161.220 161.220 A 228.000 228.000 0 0 0 228.000 0.000 Z" id="seg-r07-s3"></path>
-          <path class="segment" d="M 188.090 188.090 A 266.000 266.000 0 0 1 0.000 266.000 L 0.000 228.000 A 228.000 228.000 0 0 0 161.220 161.220 Z" id="seg-r07-s4"></path>
-          <path class="segment" d="M 0.000 266.000 A 266.000 266.000 0 0 1 -188.090 188.090 L -161.220 161.220 A 228.000 228.000 0 0 0 0.000 228.000 Z" id="seg-r07-s5"></path>
-          <path class="segment" d="M -188.090 188.090 A 266.000 266.000 0 0 1 -266.000 0.000 L -228.000 0.000 A 228.000 228.000 0 0 0 -161.220 161.220 Z" id="seg-r07-s6"></path>
-          <path class="segment" d="M -266.000 0.000 A 266.000 266.000 0 0 1 -188.090 -188.090 L -161.220 -161.220 A 228.000 228.000 0 0 0 -228.000 0.000 Z" id="seg-r07-s7"></path>
-          <path class="segment" d="M -188.090 -188.090 A 266.000 266.000 0 0 1 -0.000 -266.000 L -0.000 -228.000 A 228.000 228.000 0 0 0 -161.220 -161.220 Z" id="seg-r07-s8"></path>
-
-          <path class="segment" d="M 0.000 -304.000 A 304.000 304.000 0 0 1 214.960 -214.960 L 188.090 -188.090 A 266.000 266.000 0 0 0 0.000 -266.000 Z" id="seg-r08-s1"></path>
-          <path class="segment" d="M 214.960 -214.960 A 304.000 304.000 0 0 1 304.000 0.000 L 266.000 0.000 A 266.000 266.000 0 0 0 188.090 -188.090 Z" id="seg-r08-s2"></path>
-          <path class="segment" d="M 304.000 0.000 A 304.000 304.000 0 0 1 214.960 214.960 L 188.090 188.090 A 266.000 266.000 0 0 0 266.000 0.000 Z" id="seg-r08-s3"></path>
-          <path class="segment" d="M 214.960 214.960 A 304.000 304.000 0 0 1 0.000 304.000 L 0.000 266.000 A 266.000 266.000 0 0 0 188.090 188.090 Z" id="seg-r08-s4"></path>
-          <path class="segment" d="M 0.000 304.000 A 304.000 304.000 0 0 1 -214.960 214.960 L -188.090 188.090 A 266.000 266.000 0 0 0 0.000 266.000 Z" id="seg-r08-s5"></path>
-          <path class="segment" d="M -214.960 214.960 A 304.000 304.000 0 0 1 -304.000 0.000 L -266.000 0.000 A 266.000 266.000 0 0 0 -188.090 188.090 Z" id="seg-r08-s6"></path>
-          <path class="segment" d="M -304.000 0.000 A 304.000 304.000 0 0 1 -214.960 -214.960 L -188.090 -188.090 A 266.000 266.000 0 0 0 -266.000 0.000 Z" id="seg-r08-s7"></path>
-          <path class="segment" d="M -214.960 -214.960 A 304.000 304.000 0 0 1 -0.000 -304.000 L -0.000 -266.000 A 266.000 266.000 0 0 0 -188.090 -188.090 Z" id="seg-r08-s8"></path>
-
-          <path class="segment" d="M 0.000 -342.000 A 342.000 342.000 0 0 1 241.831 -241.831 L 214.960 -214.960 A 304.000 304.000 0 0 0 0.000 -304.000 Z" id="seg-r09-s1"></path>
-          <path class="segment" d="M 241.831 -241.831 A 342.000 342.000 0 0 1 342.000 0.000 L 304.000 0.000 A 304.000 304.000 0 0 0 214.960 -214.960 Z" id="seg-r09-s2"></path>
-          <path class="segment" d="M 342.000 0.000 A 342.000 342.000 0 0 1 241.831 241.831 L 214.960 214.960 A 304.000 304.000 0 0 0 304.000 0.000 Z" id="seg-r09-s3"></path>
-          <path class="segment" d="M 241.831 241.831 A 342.000 342.000 0 0 1 0.000 342.000 L 0.000 304.000 A 304.000 304.000 0 0 0 214.960 214.960 Z" id="seg-r09-s4"></path>
-          <path class="segment" d="M 0.000 342.000 A 342.000 342.000 0 0 1 -241.831 241.831 L -214.960 214.960 A 304.000 304.000 0 0 0 0.000 304.000 Z" id="seg-r09-s5"></path>
-          <path class="segment" d="M -241.831 241.831 A 342.000 342.000 0 0 1 -342.000 0.000 L -304.000 0.000 A 304.000 304.000 0 0 0 -214.960 214.960 Z" id="seg-r09-s6"></path>
-          <path class="segment" d="M -342.000 0.000 A 342.000 342.000 0 0 1 -241.831 -241.831 L -214.960 -214.960 A 304.000 304.000 0 0 0 -304.000 0.000 Z" id="seg-r09-s7"></path>
-          <path class="segment" d="M -241.831 -241.831 A 342.000 342.000 0 0 1 -0.000 -342.000 L -0.000 -304.000 A 304.000 304.000 0 0 0 -214.960 -214.960 Z" id="seg-r09-s8"></path>
-
-          <path class="segment" d="M 0.000 -380.000 A 380.000 380.000 0 0 1 268.701 -268.701 L 241.831 -241.831 A 342.000 342.000 0 0 0 0.000 -342.000 Z" id="seg-r10-s1"></path>
-          <path class="segment" d="M 268.701 -268.701 A 380.000 380.000 0 0 1 380.000 0.000 L 342.000 0.000 A 342.000 342.000 0 0 0 241.831 -241.831 Z" id="seg-r10-s2"></path>
-          <path class="segment" d="M 380.000 0.000 A 380.000 380.000 0 0 1 268.701 268.701 L 241.831 241.831 A 342.000 342.000 0 0 0 342.000 0.000 Z" id="seg-r10-s3"></path>
-          <path class="segment" d="M 268.701 268.701 A 380.000 380.000 0 0 1 0.000 380.000 L 0.000 342.000 A 342.000 342.000 0 0 0 241.831 241.831 Z" id="seg-r10-s4"></path>
-          <path class="segment" d="M 0.000 380.000 A 380.000 380.000 0 0 1 -268.701 268.701 L -241.831 241.831 A 342.000 342.000 0 0 0 0.000 342.000 Z" id="seg-r10-s5"></path>
-          <path class="segment" d="M -268.701 268.701 A 380.000 380.000 0 0 1 -380.000 0.000 L -342.000 0.000 A 342.000 342.000 0 0 0 -241.831 241.831 Z" id="seg-r10-s6"></path>
-          <path class="segment" d="M -380.000 0.000 A 380.000 380.000 0 0 1 -268.701 -268.701 L -241.831 -241.831 A 342.000 342.000 0 0 0 -342.000 0.000 Z" id="seg-r10-s7"></path>
-          <path class="segment" d="M -268.701 -268.701 A 380.000 380.000 0 0 1 -0.000 -380.000 L -0.000 -342.000 A 342.000 342.000 0 0 0 -241.831 -241.831 Z" id="seg-r10-s8"></path>
-        </g>
-
-        <!-- Ring outlines -->
-        <circle class="decor" fill="none" r="38"  stroke="#000" stroke-width="4"></circle>
-        <circle class="decor" fill="none" r="76"  stroke="#000" stroke-width="4"></circle>
-        <circle class="decor" fill="none" r="114" stroke="#000" stroke-width="4"></circle>
-        <circle class="decor" fill="none" r="152" stroke="#000" stroke-width="4"></circle>
-        <circle class="decor" fill="none" r="190" stroke="#000" stroke-width="4"></circle>
-        <circle class="decor" fill="none" r="228" stroke="#000" stroke-width="4"></circle>
-        <circle class="decor" fill="none" r="266" stroke="#000" stroke-width="4"></circle>
-        <circle class="decor" fill="none" r="304" stroke="#000" stroke-width="4"></circle>
-        <circle class="decor" fill="none" r="342" stroke="#000" stroke-width="4"></circle>
-        <circle class="decor" fill="none" r="380" stroke="#000" stroke-width="10"></circle>
-
-        <!-- 8 radial dividers -->
-        <g class="decor" stroke="#000" stroke-linecap="round" stroke-width="8">
-          <line x1="0" x2="0" y1="0" y2="-380"></line>
-          <line x1="0" x2="268.7" y1="0" y2="-268.7"></line>
-          <line x1="0" x2="380" y1="0" y2="0"></line>
-          <line x1="0" x2="268.7" y1="0" y2="268.7"></line>
-          <line x1="0" x2="0" y1="0" y2="380"></line>
-          <line x1="0" x2="-268.7" y1="0" y2="268.7"></line>
-          <line x1="0" x2="-380" y1="0" y2="0"></line>
-          <line x1="0" x2="-268.7" y1="0" y2="-268.7"></line>
-        </g>
-
-        <circle class="decor" fill="#000" r="6"></circle>
-      </g>
-
-      <!-- Labels (main words only) -->
-      <g id="labels">
-        <g>
-          <rect fill="#2E7D32" height="78" rx="16" ry="16" width="148" x="802.034379" y="56.015415"></rect>
-          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="876.034379" y="111.015415">Work</text>
-        </g>
-
-        <g>
-          <rect fill="#E53935" height="78" rx="16" ry="16" width="196" x="1066.984585" y="304.965621"></rect>
-          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="1164.984585" y="359.965621">Social</text>
-        </g>
-
-        <g>
-          <rect fill="#F9D400" height="78" rx="16" ry="16" width="340" x="994.984585" y="657.034379"></rect>
-          <text fill="black" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="1164.984585" y="712.034379">Surroundings</text>
-        </g>
-
-        <g>
-          <rect fill="#0B4DBA" height="78" rx="16" ry="16" width="244" x="754.034379" y="905.984585"></rect>
-          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="876.034379" y="960.984585">Physical</text>
-        </g>
-
-        <g>
-          <rect fill="#2E7D32" height="78" rx="16" ry="16" width="268" x="389.965621" y="905.984585"></rect>
-          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="523.965621" y="960.984585">Financial</text>
-        </g>
-
-        <g>
-          <rect fill="#E53935" height="78" rx="16" ry="16" width="268" x="101.015415" y="657.034379"></rect>
-          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="235.015415" y="712.034379">Spiritual</text>
-        </g>
-
-        <g>
-          <rect fill="#F9D400" height="78" rx="16" ry="16" width="244" x="113.015415" y="304.965621"></rect>
-          <text fill="black" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="235.015415" y="359.965621">Learning</text>
-        </g>
-
-        <g>
-          <rect fill="#0B4DBA" height="78" rx="16" ry="16" width="268" x="389.965621" y="56.015415"></rect>
-          <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="523.965621" y="111.015415">Emotional</text>
-        </g>
-      </g>
-       <!-- Optional Cycle/Campaign label (Bottom Left) -->
-<text id="cycleText"
-      x="40" y="955"
-      fill="#000000"
-      font-family="Arial, Helvetica, sans-serif"
-      font-size="22"
-      font-weight="700"
-      text-anchor="start">
-  <tspan id="cycleLine1" x="40" dy="0"></tspan>
-  <tspan id="cycleLine2" x="40" dy="26"></tspan>
-</text>
-    <!-- ===== Footer Brand (Bottom Right) ===== -->
-<g id="footerBrand">
-  <!-- Logo moved to bottom-right (keep id="hourLogo" so PNG export embedding still works) -->
-  <image id="hourLogo"
-         x="1210" y="800"
-         width="120" height="120"
-         href="HOUR Transparent Logo.png"
-         xlink:href="HOUR Transparent Logo.png"
-         preserveAspectRatio="xMidYMid meet" />
-
-  <!-- My Realest State moved to bottom-right -->
-  <g id="footerMRS">
-    <rect x="1030" y="935" width="360" height="58" rx="18" ry="18" fill="#000000"></rect>
-    <text x="1210" y="970"
-          fill="#ffffff"
-          font-family="Arial, Helvetica, sans-serif"
-          font-size="32"
-          font-weight="700"
-          text-anchor="middle">My Realest State</text>
-  </g>
-</g>
-<!-- ===== End Footer Brand ===== -->    
-    </svg>
-  </div>
-</div>
-<!-- Hidden form used to submit data to Apps Script without CORS issues -->
-<iframe name="wheelSubmitFrame" style="display:none;"></iframe>
-
-<form id="wheelSubmitForm"
-      method="POST"
-      target="wheelSubmitFrame"
-      style="display:none;"
-      action="https://script.google.com/macros/s/AKfycbwz6FS_ndj3XORkzhp_olG3fivUV-sIuLdn6Iab7Eis8S1TWgwBEMLlnF5qOzCAgdyong/exec">
-
-  <input name="timestamp_iso" id="f_timestamp_iso">
-
-  <input name="group_id" id="f_group_id">
-  <input name="group_type" id="f_group_type">
-  <input name="group_label" id="f_group_label">
-  <input name="cycle_id" id="f_cycle_id">
-  <input name="source_tool" id="f_source_tool">
-
-  <input name="work" id="f_work">
-  <input name="social" id="f_social">
-  <input name="surroundings" id="f_surroundings">
-  <input name="physical" id="f_physical">
-  <input name="financial" id="f_financial">
-  <input name="spiritual" id="f_spiritual">
-  <input name="learning" id="f_learning">
-  <input name="emotional" id="f_emotional">
-
-  <input name="total_score" id="f_total_score">
-  <input name="page_url" id="f_page_url">
-</form>
 <script>
-(() => {
-  // Fixed slice colors
-  const SLICE_COLOR = {
-    1: "#2E7D32", // Work
-    2: "#E53935", // Social
-    3: "#F9D400", // Surroundings
-    4: "#0B4DBA", // Physical
-    5: "#2E7D32", // Financial
-    6: "#E53935", // Spiritual
-    7: "#F9D400", // Learning
-    8: "#0B4DBA"  // Emotional
-  };
-
-  const svg = document.getElementById("wheelSvg");
-  const segments = Array.from(svg.querySelectorAll(".segment"));
-    // Keep current level per slice so we can submit scores
-// Slice order: 1 Work, 2 Social, 3 Surroundings, 4 Physical, 5 Financial, 6 Spiritual, 7 Learning, 8 Emotional
-const sliceLevel = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0};
-    function getParam(qs, key) {
-  const v = qs.get(key);
-  return (v === null || v === undefined) ? "" : String(v).trim();
-}
-
-// ✅ Define qs FIRST
-const qs = new URLSearchParams(window.location.search);
-
-// ✅ Define group_id / group_type FIRST
-const group_id = getParam(qs, "group_id") || "INDIVIDUAL";
-
-const group_type =
-  getParam(qs, "group_type") || (group_id === "INDIVIDUAL" ? "Individual" : "Group");
-
-// ✅ Do NOT truncate group label here (keep full label)
-const group_label_raw = getParam(qs, "group_label");
-const group_label =
-  group_label_raw || (group_id === "INDIVIDUAL" ? "Individual Reflection" : group_id);
-
-// ✅ Cycle (optional)
-const cycle_id = getParam(qs, "cycle_id");
-
-// ✅ Constant
-const source_tool = "wheel_power_v1";
-
-// Optional: quick debug while testing (remove later if you want)
-console.log("PARAMS:", { group_id, group_type, group_label, cycle_id });
-    // ---- Two-line SVG wrapping helpers ----
-function splitCandidates(label) {
-  const s = (label || "").trim();
-  if (!s) return [{ a: "", b: "" }];
-
-  // Prefer splitting on spaces; then hyphens; else fallback to midpoint.
-  const seps = s.includes(" ") ? [" "] : (s.includes("-") ? ["-"] : []);
-  const out = [];
-
-  if (seps.length) {
-    const sep = seps[0];
-    const parts = s.split(sep);
-
-    // Build candidate split points near the middle for best balance.
-    const mid = Math.floor(parts.length / 2);
-    const offsets = [0, -1, 1, -2, 2, -3, 3];
-
-    for (const off of offsets) {
-      const i = mid + off;
-      if (i <= 0 || i >= parts.length) continue;
-
-      const a = parts.slice(0, i).join(sep).trim();
-      const b = parts.slice(i).join(sep).trim();
-      out.push({ a, b });
-    }
-  } else {
-    // Hard fallback: character midpoint
-    const m = Math.floor(s.length / 2);
-    out.push({ a: s.slice(0, m).trim(), b: s.slice(m).trim() });
+/* ---------------------------------
+   1. UPDATE HEADER TEXT + FIT
+----------------------------------*/
+document.addEventListener("DOMContentLoaded", function () {
+  const header = document.getElementById("rightHeaderText");
+  if (header) {
+    header.textContent = "Wheel Power Reflections";
+    header.style.fontSize = "22px"; // slightly reduced
   }
-
-  // Always include first/last-ish fallbacks
-  out.push({ a: s.slice(0, 28).trim(), b: s.slice(28).trim() });
-  return out.filter(x => x.a || x.b);
-}
-
-function ellipsizeToWidth(tspanEl, maxWidth) {
-  let txt = (tspanEl.textContent || "").trim();
-  if (!txt) return;
-
-  // If already fits, done.
-  if (tspanEl.getComputedTextLength() <= maxWidth) return;
-
-  // Trim until it fits, then add ellipsis.
-  while (txt.length > 0 && tspanEl.getComputedTextLength() > maxWidth) {
-    txt = txt.slice(0, -1);
-    tspanEl.textContent = txt + "…";
-  }
-}
-
-function setTwoLineWrappedText({ line1El, line2El, rectEl, label, padding = 28 }) {
-  if (!line1El || !line2El) return;
-
-  const full = (label || "").trim();
-  if (!full) {
-    line1El.textContent = "";
-    line2El.textContent = "";
-    return;
-  }
-
-  const maxWidth = rectEl
-    ? (Number(rectEl.getAttribute("width")) - padding)
-    : 520; // fallback max width if no rect provided
-
-  // Try balanced splits first.
-  const cands = splitCandidates(full);
-
-  let best = null;
-  let bestScore = Infinity;
-
-  for (const c of cands) {
-    line1El.textContent = c.a;
-    line2El.textContent = c.b;
-
-    const w1 = line1El.getComputedTextLength();
-    const w2 = line2El.getComputedTextLength();
-
-    // Penalize overflow heavily; otherwise prefer balanced lines.
-    const overflow = Math.max(0, w1 - maxWidth) + Math.max(0, w2 - maxWidth);
-    const balance = Math.abs(w1 - w2);
-    const score = overflow * 1000 + balance;
-
-    if (score < bestScore) {
-      bestScore = score;
-      best = { ...c, w1, w2 };
-    }
-  }
-
-  // Apply the best split
-  line1El.textContent = best?.a || full;
-  line2El.textContent = best?.b || "";
-
-  // If either line still overflows, ellipsize the second line first
-  if (line2El.textContent) {
-    ellipsizeToWidth(line2El, maxWidth);
-  }
-
-  // If line1 still overflows (rare), ellipsize it too
-  ellipsizeToWidth(line1El, maxWidth);
-}
-function fitTextToRect(textEl, rectEl, padding = 28, minFontSize = 20) {
-  if (!textEl || !rectEl) return;
-
-  // Reset any prior fitting
-  textEl.removeAttribute("transform");
-  textEl.style.fontSize = ""; // use SVG attribute font-size if present
-
-  const maxWidth = Number(rectEl.getAttribute("width")) - padding;
-
-  // Start from the current rendered font-size
-  let fontSize = parseFloat(window.getComputedStyle(textEl).fontSize) || 44;
-
-  // Safety loop: shrink until it fits or hits minFontSize
-  for (let i = 0; i < 40; i++) {
-    const w = textEl.getComputedTextLength();
-    if (w <= maxWidth) break;
-    fontSize -= 1;
-    if (fontSize < minFontSize) { fontSize = minFontSize; break; }
-    textEl.style.fontSize = `${fontSize}px`;
-  }
-}
-
-// ---- Group header: measure-based switching (1-line if fits, else 2-line) ----
-const groupHeaderRect = document.getElementById("groupHeaderRect");
-
-const groupHeaderSingle = document.getElementById("groupHeaderSingle");
-const groupHeaderMulti = document.getElementById("groupHeaderMulti");
-const groupLine1 = document.getElementById("groupHeaderLine1");
-const groupLine2 = document.getElementById("groupHeaderLine2");
-
-const HEADER_PADDING = 16; // padding inside pill
-
-function show(el, yes) {
-  if (!el) return;
-  el.style.display = yes ? "" : "none";
-}
-
-function maxWidthFromRect(rectEl, padding) {
-  if (!rectEl) return 520;
-  return Number(rectEl.getAttribute("width")) - padding;
-}
-
-// 1) Try single-line first
-if (groupHeaderSingle) {
-  groupHeaderSingle.textContent = group_label;
-}
-
-show(groupHeaderSingle, true);
-show(groupHeaderMulti, false);
-
-// Measure after setting text
-const headerMaxWidth = maxWidthFromRect(groupHeaderRect, HEADER_PADDING);
-const singleWidth = groupHeaderSingle ? groupHeaderSingle.getComputedTextLength() : Infinity;
-
-// 2) If it overflows, switch to 2-line wrapped mode
-if (singleWidth > headerMaxWidth) {
-  show(groupHeaderSingle, false);
-  show(groupHeaderMulti, true);
-
-  setTwoLineWrappedText({
-    line1El: groupLine1,
-    line2El: groupLine2,
-    rectEl: groupHeaderRect,
-    label: group_label,
-    padding: HEADER_PADDING
-  });
-}    
-
-// ---- Apply Cycle value (2-line wrap) ----
-// No "Cycle:" prefix (format B). If empty, show nothing.
-const cycleLine1 = document.getElementById("cycleLine1");
-const cycleLine2 = document.getElementById("cycleLine2");
-
-if (!cycle_id) {
-  if (cycleLine1) cycleLine1.textContent = "";
-  if (cycleLine2) cycleLine2.textContent = "";
-} else {
-  // Use a simple wrap width for bottom-left. No rect there, so we use a max width value.
-  // 520 works well visually without running into the far right branding area.
-  setTwoLineWrappedText({
-    line1El: cycleLine1,
-    line2El: cycleLine2,
-    rectEl: null,
-    label: cycle_id,
-    padding: 0
-  });
-}
-// Update toolbar pill
-
-
-  function parseId(el) {
-    const m = (el.id || "").match(/^seg-r(\d+)-s(\d+)$/);
-    if (!m) return null;
-    return { ring: parseInt(m[1], 10), slice: parseInt(m[2], 10) };
-  }
-
-  function setSliceLevel(slice, level) {
-  sliceLevel[slice] = level;
-
-  const color = SLICE_COLOR[slice];
-  for (const el of segments) {
-    const p = parseId(el);
-    if (!p || p.slice !== slice) continue;
-    el.style.fill = (p.ring <= level) ? color : "#ffffff";
-  }
-}
-
-  function resetAll() {
-  for (const el of segments) el.style.fill = "#ffffff";
-  for (const k in sliceLevel) sliceLevel[k] = 0;
-
-  // Clear submit UI
-  const submitStatus = document.getElementById("submitStatus");
-  if (submitStatus) submitStatus.textContent = "";
-}
-
-  // Pointer events: click+drag to paint levels
-  let isDown = false;
-
-  function handlePaint(target) {
-    const p = parseId(target);
-    if (!p) return;
-    setSliceLevel(p.slice, p.ring);
-  }
-
-  segments.forEach(el => {
-    el.setAttribute("tabindex", "0");
-    el.addEventListener("pointerdown", (e) => {
-      isDown = true;
-      el.setPointerCapture?.(e.pointerId);
-      handlePaint(el);
-      e.preventDefault();
-    });
-    el.addEventListener("pointerenter", () => {
-      if (isDown) handlePaint(el);
-    });
-    el.addEventListener("pointerup", () => { isDown = false; });
-    el.addEventListener("pointercancel", () => { isDown = false; });
-
-    // keyboard support
-    el.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        handlePaint(el);
-        e.preventDefault();
-      }
-    });
-  });
-
-  window.addEventListener("pointerup", () => { isDown = false; });
-
-  document.getElementById("resetBtn").addEventListener("click", resetAll);
-
-  // Download PNG
-  document.getElementById("downloadBtn").addEventListener("click", async () => {
-  // Clone SVG so we can modify it for export without changing what’s on screen
-  const svgClone = svg.cloneNode(true);
-
-  // Find the logo image by id and embed it as a data URL so canvas export includes it
-  const logo = svgClone.querySelector("#hourLogo");
-  if (logo) {
-    const logoUrl =
-      logo.getAttribute("href") ||
-      logo.getAttributeNS("http://www.w3.org/1999/xlink", "href");
-
-    try {
-      const resp = await fetch(logoUrl, { cache: "no-store" });
-      const blob = await resp.blob();
-
-      const dataUrl = await new Promise((resolve) => {
-        const r = new FileReader();
-        r.onload = () => resolve(r.result);
-        r.readAsDataURL(blob);
-      });
-
-      logo.setAttribute("href", dataUrl);
-      logo.setAttributeNS("http://www.w3.org/1999/xlink", "href", dataUrl);
-    } catch (e) {
-      console.warn("Logo embedding failed (PNG will export without logo):", e);
-    }
-  }
-
-  // Serialize the modified clone and export
-  const xml = new XMLSerializer().serializeToString(svgClone);
-  const svgBlob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(svgBlob);
-
-  const img = new Image();
-  img.onload = () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 1400;
-    canvas.height = 1000;
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0);
-
-    URL.revokeObjectURL(url);
-
-    const a = document.createElement("a");
-    // ---- Dynamic filename: MM-DD-YYYY__Group__Cycle__360wellness.png ----
-const now = new Date();
-const mm = String(now.getMonth() + 1).padStart(2, "0");
-const dd = String(now.getDate()).padStart(2, "0");
-const yyyy = now.getFullYear();
-const datePart = `${mm}-${dd}-${yyyy}`;
-
-function sanitizeFilePart(str) {
-  return (str || "")
-    .replace(/[\/\\:*?"<>|]/g, "")   // illegal filename chars
-    .replace(/\s+/g, "-")            // spaces → dash
-    .replace(/-+/g, "-")             // collapse dashes
-    .replace(/^-|-$/g, "")           // trim dashes
-    .substring(0, 60);               // cap length
-}
-
-const groupPart = sanitizeFilePart(group_label);
-const cyclePart = sanitizeFilePart(cycle_id);
-
-const parts = [datePart];
-if (groupPart) parts.push(groupPart);
-if (cyclePart) parts.push(cyclePart);
-parts.push("wheelpower");
-
-a.download = parts.join("__") + ".png";
-    a.href = canvas.toDataURL("image/png");
-    a.click();
-  };
-  img.src = url;
 });
-    // ---- Submit to Google Sheet via hidden form ----
-const submitBtn = document.getElementById("submitBtn");
-const submitStatus = document.getElementById("submitStatus");
-const submitForm = document.getElementById("wheelSubmitForm");
 
-function computeScores() {
-  const work = sliceLevel[1] || 0;
-  const social = sliceLevel[2] || 0;
-  const surroundings = sliceLevel[3] || 0;
-  const physical = sliceLevel[4] || 0;
-  const financial = sliceLevel[5] || 0;
-  const spiritual = sliceLevel[6] || 0;
-  const learning = sliceLevel[7] || 0;
-  const emotional = sliceLevel[8] || 0;
-  const total = work + social + surroundings + physical + financial + spiritual + learning + emotional;
-  return { work, social, surroundings, physical, financial, spiritual, learning, emotional, total };
+
+/* ---------------------------------
+   2. READ URL PARAMS
+----------------------------------*/
+function getParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name) || "";
 }
 
-function anySelectionMade() {
-  for (const k in sliceLevel) {
-    if ((sliceLevel[k] || 0) > 0) return true;
-  }
-  return false;
+const group_id = getParam("group_id") || "INDIVIDUAL";
+const group_label = getParam("group_label") || "Individual Reflection";
+const cycle_id = getParam("cycle_id") || "";
+const steward = getParam("steward");   // <-- ONLY in URL
+
+
+/* ---------------------------------
+   3. CALCULATE ROLLUPS
+----------------------------------*/
+function calculateAverages(scores) {
+
+  const emotional = Number(scores.emotional || 0);
+  const physical = Number(scores.physical || 0);
+  const learning = Number(scores.learning || 0);
+  const surroundings = Number(scores.surroundings || 0);
+  const spiritual = Number(scores.spiritual || 0);
+  const social = Number(scores.social || 0);
+  const financial = Number(scores.financial || 0);
+  const work = Number(scores.work || 0);
+
+  return {
+    care: (emotional + physical) / 2,
+    pacing: (learning + surroundings) / 2,
+    trust: (spiritual + social) / 2,
+    alignment: (financial + work) / 2
+  };
 }
 
-if (submitBtn && submitForm) {
-  submitBtn.addEventListener("click", () => {
-    // Optional: prevent empty submissions
-    if (!anySelectionMade()) {
-      submitStatus.textContent = "Select at least one level before submitting.";
-      submitStatus.style.color = "#E53935";
-      return;
-    }
 
-    const ts = new Date().toISOString();
-    const s = computeScores();
+/* ---------------------------------
+   4. SUBMIT FUNCTION
+----------------------------------*/
+async function submitWheel(scores) {
 
-    document.getElementById("f_timestamp_iso").value = ts;
+  const rollups = calculateAverages(scores);
 
-    document.getElementById("f_group_id").value = group_id;
-    document.getElementById("f_group_type").value = group_type;
-    document.getElementById("f_group_label").value = group_label;
-    document.getElementById("f_cycle_id").value = cycle_id;
-    document.getElementById("f_source_tool").value = source_tool;
+  const payload = {
+    timestamp_iso: new Date().toISOString(),
+    group_id,
+    group_label,
+    cycle_id,
+    source_tool: "wheel_power_v2",
 
-    document.getElementById("f_work").value = s.work;
-    document.getElementById("f_social").value = s.social;
-    document.getElementById("f_surroundings").value = s.surroundings;
-    document.getElementById("f_physical").value = s.physical;
-    document.getElementById("f_financial").value = s.financial;
-    document.getElementById("f_spiritual").value = s.spiritual;
-    document.getElementById("f_learning").value = s.learning;
-    document.getElementById("f_emotional").value = s.emotional;
+    // map steward → user_email (NOT in URL)
+    user_email: steward || "",
 
-    document.getElementById("f_total_score").value = s.total;
-    document.getElementById("f_page_url").value = window.location.href;
+    work: scores.work,
+    social: scores.social,
+    surroundings: scores.surroundings,
+    physical: scores.physical,
+    financial: scores.financial,
+    spiritual: scores.spiritual,
+    learning: scores.learning,
+    emotional: scores.emotional,
 
-    // Submit (cross-origin; we confirm optimistically)
-    submitForm.submit();
+    care: rollups.care,
+    pacing: rollups.pacing,
+    trust: rollups.trust,
+    alignment: rollups.alignment,
 
-    // UI feedback
-    submitStatus.textContent = "Submitted ✓";
-    submitStatus.style.color = "#2E7D32";
+    total_score:
+      Number(scores.work || 0) +
+      Number(scores.social || 0) +
+      Number(scores.surroundings || 0) +
+      Number(scores.physical || 0) +
+      Number(scores.financial || 0) +
+      Number(scores.spiritual || 0) +
+      Number(scores.learning || 0) +
+      Number(scores.emotional || 0),
 
-    // Simple anti-double-click protection
-    submitBtn.disabled = true;
-    setTimeout(() => { submitBtn.disabled = false; }, 1500);
+    page_url: window.location.href
+  };
+
+  await fetch("YOUR_WEB_APP_URL_HERE", {
+    method: "POST",
+    body: new URLSearchParams(payload)
   });
+
+  alert("Reflection saved successfully.");
 }
-})();
 </script>
-</body>
-</html>
