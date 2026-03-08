@@ -300,47 +300,47 @@
 
 <!-- ===== Rollup Chart (Bottom Left) ===== -->
 <g id="rollupChart" transform="translate(55,770)">
-  <line x1="0" y1="120" x2="250" y2="120" stroke="#000000" stroke-width="2"></line>
+  <line x1="0" y1="150" x2="280" y2="150" stroke="#000000" stroke-width="2"></line>
 
-  <rect id="barCare" x="8" y="120" width="34" height="0" fill="#0B4DBA" rx="4" ry="4"></rect>
-  <rect id="barPacing" x="68" y="120" width="34" height="0" fill="#F9D400" rx="4" ry="4"></rect>
-  <rect id="barTrust" x="128" y="120" width="34" height="0" fill="#E53935" rx="4" ry="4"></rect>
-  <rect id="barAlignment" x="188" y="120" width="34" height="0" fill="#2E7D32" rx="4" ry="4"></rect>
+  <rect id="barCare" x="8" y="150" width="40" height="0" fill="#0B4DBA" rx="4" ry="4"></rect>
+  <rect id="barPacing" x="68" y="150" width="40" height="0" fill="#F9D400" rx="4" ry="4"></rect>
+  <rect id="barTrust" x="128" y="150" width="40" height="0" fill="#E53935" rx="4" ry="4"></rect>
+  <rect id="barAlignment" x="188" y="150" width="40" height="0" fill="#2E7D32" rx="4" ry="4"></rect>
 
-  <text id="barCareValue" x="25" y="112" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#0B4DBA">0</text>
-  <text id="barPacingValue" x="85" y="112" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#B58A00">0</text>
-  <text id="barTrustValue" x="145" y="112" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#E53935">0</text>
-  <text id="barAlignmentValue" x="205" y="112" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#2E7D32">0</text>
+  <text id="barCareValue" x="25" y="138" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#0B4DBA">0</text>
+  <text id="barPacingValue" x="85" y="138" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#B58A00">0</text>
+  <text id="barTrustValue" x="145" y="138" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#E53935">0</text>
+  <text id="barAlignmentValue" x="205" y="138" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#2E7D32">0</text>
 
-  <text x="25" y="148"
+  <text x="25" y="182"
         transform="rotate(-35 25 148)"
         text-anchor="end"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="16"
+        font-size="32"
         font-weight="700"
         fill="#0B4DBA">Care</text>
 
-  <text x="85" y="148"
+  <text x="85" y="182"
         transform="rotate(-35 85 148)"
         text-anchor="end"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="16"
+        font-size="32"
         font-weight="700"
         fill="#B58A00">Pacing</text>
 
-  <text x="145" y="148"
+  <text x="145" y="182"
         transform="rotate(-35 145 148)"
         text-anchor="end"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="16"
+        font-size="32"
         font-weight="700"
         fill="#E53935">Trust</text>
 
-  <text x="205" y="148"
+  <text x="205" y="182"
         transform="rotate(-35 205 148)"
         text-anchor="end"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="16"
+        font-size="32"
         font-weight="700"
         fill="#2E7D32">Alignment</text>
 </g>
@@ -447,7 +447,7 @@ function getRollups() {
 }
 
 function setChartBar(barId, valueId, value) {
-  const chartMax = 120;
+  const chartMax = 150;
   const scoreMax = 10;
   const h = (value / scoreMax) * chartMax;
   const y = 120 - h;
