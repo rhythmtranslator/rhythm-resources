@@ -299,48 +299,47 @@
 </text>
 
 <!-- ===== Rollup Chart (Bottom Left) ===== -->
-<g id="rollupChart" transform="translate(55,785)">
-  <line x1="0" y1="150" x2="320" y2="150" stroke="#000000" stroke-width="2"></line>
+<g id="rollupChart" transform="translate(55,800)">
+  <line x1="0" y1="165" x2="330" y2="165" stroke="#000000" stroke-width="2"></line>
 
-  <rect id="barCare" x="10" y="150" width="36" height="0" fill="#0B4DBA" rx="4" ry="4"></rect>
-<rect id="barPacing" x="85" y="150" width="36" height="0" fill="#F9D400" rx="4" ry="4"></rect>
-<rect id="barTrust" x="160" y="150" width="36" height="0" fill="#E53935" rx="4" ry="4"></rect>
-<rect id="barAlignment" x="235" y="150" width="36" height="0" fill="#2E7D32" rx="4" ry="4"></rect>
+  <rect id="barCare" x="12" y="165" width="38" height="0" fill="#0B4DBA" rx="4" ry="4"></rect>
+  <rect id="barPacing" x="92" y="165" width="38" height="0" fill="#F9D400" rx="4" ry="4"></rect>
+  <rect id="barTrust" x="172" y="165" width="38" height="0" fill="#E53935" rx="4" ry="4"></rect>
+  <rect id="barAlignment" x="252" y="165" width="38" height="0" fill="#2E7D32" rx="4" ry="4"></rect>
 
-  <text id="barCareValue" x="28" y="155" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#0B4DBA">0</text>
-<text id="barPacingValue" x="103" y="155" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#B58A00">0</text>
-<text id="barTrustValue" x="178" y="155" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#E53935">0</text>
-<text id="barAlignmentValue" x="253" y="155" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#2E7D32">0</text>
+  <text id="barCareValue" x="31" y="150" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#111111">0</text>
+  <text id="barPacingValue" x="111" y="150" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#111111">0</text>
+  <text id="barTrustValue" x="191" y="150" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#111111">0</text>
+  <text id="barAlignmentValue" x="271" y="150" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#111111">0</text>
 
-  <text x="28" y="183"
-      text-anchor="middle"
-      font-family="Arial, Helvetica, sans-serif"
-      font-size="18"
-      font-weight="700"
-      fill="#0B4DBA">Care</text>
+  <text x="31" y="198"
+        text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="17"
+        font-weight="700"
+        fill="#0B4DBA">Care</text>
 
-<text x="103" y="183"
-      text-anchor="middle"
-      font-family="Arial, Helvetica, sans-serif"
-      font-size="18"
-      font-weight="700"
-      fill="#B58A00">Pacing</text>
+  <text x="111" y="198"
+        text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="17"
+        font-weight="700"
+        fill="#B58A00">Pacing</text>
 
-<text x="178" y="183"
-      text-anchor="middle"
-      font-family="Arial, Helvetica, sans-serif"
-      font-size="18"
-      font-weight="700"
-      fill="#E53935">Trust</text>
+  <text x="191" y="198"
+        text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="17"
+        font-weight="700"
+        fill="#E53935">Trust</text>
 
-<text x="253" y="183"
-      text-anchor="middle"
-      font-family="Arial, Helvetica, sans-serif"
-      font-size="18"
-      font-weight="700"
-      fill="#2E7D32">Alignment</text>
+  <text x="271" y="198"
+        text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="17"
+        font-weight="700"
+        fill="#2E7D32">Alignment</text>
 </g>
-
     <!-- ===== Footer Brand (Bottom Right) ===== -->
 <g id="footerBrand">
   <!-- Logo moved to bottom-right (keep id="hourLogo" so PNG export embedding still works) -->
@@ -443,7 +442,7 @@ function getRollups() {
 }
 
 function setChartBar(barId, valueId, value) {
-  const chartMax = 150;
+  const chartMax = 140;
   const scoreMax = 10;
   const h = (value / scoreMax) * chartMax;
   const y = 120 - h;
@@ -458,7 +457,7 @@ function setChartBar(barId, valueId, value) {
 
   if (label) {
     label.textContent = Number.isInteger(value) ? String(value) : value.toFixed(1);
-    label.setAttribute("y", Math.max(14, y - 6));
+    label.setAttribute("y", Math.max(24, y - 10));
   }
 }
 
