@@ -110,10 +110,18 @@
       </g>
       <!-- ===== End Masthead ===== -->
 
-      <style>
+            <style>
         .segment { fill: #ffffff; cursor: pointer; stroke: transparent; stroke-width: 3; transition: filter 120ms ease, opacity 120ms ease; }
         .segment:hover { stroke: #000; opacity: 0.92; filter: drop-shadow(0px 0px 4px rgba(0,0,0,0.35)); }
         .decor { pointer-events: none; }
+
+        #rollupChart rect {
+          transition: y 180ms ease, height 180ms ease;
+        }
+
+        #rollupChart text[id$="Value"] {
+          transition: y 180ms ease;
+        }
       </style>
 
       <g id="wheel" transform="translate(700,520)">
@@ -278,9 +286,9 @@
           <text fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle" x="523.965621" y="111.015415">Emotional</text>
         </g>
       </g>
-       <!-- Optional Cycle/Campaign label (Bottom Left) -->
+              <!-- Optional Cycle/Campaign label (Upper Left) -->
 <text id="cycleText"
-      x="40" y="955"
+      x="40" y="145"
       fill="#000000"
       font-family="Arial, Helvetica, sans-serif"
       font-size="22"
@@ -289,6 +297,54 @@
   <tspan id="cycleLine1" x="40" dy="0"></tspan>
   <tspan id="cycleLine2" x="40" dy="26"></tspan>
 </text>
+
+<!-- ===== Rollup Chart (Bottom Left) ===== -->
+<g id="rollupChart" transform="translate(55,770)">
+  <line x1="0" y1="120" x2="250" y2="120" stroke="#000000" stroke-width="2"></line>
+
+  <rect id="barCare" x="8" y="120" width="34" height="0" fill="#0B4DBA" rx="4" ry="4"></rect>
+  <rect id="barPacing" x="68" y="120" width="34" height="0" fill="#F9D400" rx="4" ry="4"></rect>
+  <rect id="barTrust" x="128" y="120" width="34" height="0" fill="#E53935" rx="4" ry="4"></rect>
+  <rect id="barAlignment" x="188" y="120" width="34" height="0" fill="#2E7D32" rx="4" ry="4"></rect>
+
+  <text id="barCareValue" x="25" y="112" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#0B4DBA">0</text>
+  <text id="barPacingValue" x="85" y="112" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#B58A00">0</text>
+  <text id="barTrustValue" x="145" y="112" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#E53935">0</text>
+  <text id="barAlignmentValue" x="205" y="112" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#2E7D32">0</text>
+
+  <text x="25" y="148"
+        transform="rotate(-35 25 148)"
+        text-anchor="end"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="16"
+        font-weight="700"
+        fill="#0B4DBA">Care</text>
+
+  <text x="85" y="148"
+        transform="rotate(-35 85 148)"
+        text-anchor="end"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="16"
+        font-weight="700"
+        fill="#B58A00">Pacing</text>
+
+  <text x="145" y="148"
+        transform="rotate(-35 145 148)"
+        text-anchor="end"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="16"
+        font-weight="700"
+        fill="#E53935">Trust</text>
+
+  <text x="205" y="148"
+        transform="rotate(-35 205 148)"
+        text-anchor="end"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="16"
+        font-weight="700"
+        fill="#2E7D32">Alignment</text>
+</g>
+
     <!-- ===== Footer Brand (Bottom Right) ===== -->
 <g id="footerBrand">
   <!-- Logo moved to bottom-right (keep id="hourLogo" so PNG export embedding still works) -->
@@ -371,6 +427,53 @@
     // Keep current level per slice so we can submit scores
 // Slice order: 1 Work, 2 Social, 3 Surroundings, 4 Physical, 5 Financial, 6 Spiritual, 7 Learning, 8 Emotional
 const sliceLevel = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0};
+
+function getRollups() {
+  const work = sliceLevel[1] || 0;
+  const social = sliceLevel[2] || 0;
+  const surroundings = sliceLevel[3] || 0;
+  const physical = sliceLevel[4] || 0;
+  const financial = sliceLevel[5] || 0;
+  const spiritual = sliceLevel[6] || 0;
+  const learning = sliceLevel[7] || 0;
+  const emotional = sliceLevel[8] || 0;
+
+  return {
+    care: (emotional + physical) / 2,
+    pacing: (learning + surroundings) / 2,
+    trust: (spiritual + social) / 2,
+    alignment: (financial + work) / 2
+  };
+}
+
+function setChartBar(barId, valueId, value) {
+  const chartMax = 120;
+  const scoreMax = 10;
+  const h = (value / scoreMax) * chartMax;
+  const y = 120 - h;
+
+  const bar = document.getElementById(barId);
+  const label = document.getElementById(valueId);
+
+  if (bar) {
+    bar.setAttribute("height", h);
+    bar.setAttribute("y", y);
+  }
+
+  if (label) {
+    label.textContent = Number.isInteger(value) ? String(value) : value.toFixed(1);
+    label.setAttribute("y", Math.max(14, y - 6));
+  }
+}
+
+function updateRollupChart() {
+  const r = getRollups();
+  setChartBar("barCare", "barCareValue", r.care);
+  setChartBar("barPacing", "barPacingValue", r.pacing);
+  setChartBar("barTrust", "barTrustValue", r.trust);
+  setChartBar("barAlignment", "barAlignmentValue", r.alignment);
+}
+
     function getParam(qs, key) {
   const v = qs.get(key);
   return (v === null || v === undefined) ? "" : String(v).trim();
@@ -597,7 +700,7 @@ if (!cycle_id) {
     return { ring: parseInt(m[1], 10), slice: parseInt(m[2], 10) };
   }
 
-  function setSliceLevel(slice, level) {
+    function setSliceLevel(slice, level) {
   sliceLevel[slice] = level;
 
   const color = SLICE_COLOR[slice];
@@ -606,11 +709,15 @@ if (!cycle_id) {
     if (!p || p.slice !== slice) continue;
     el.style.fill = (p.ring <= level) ? color : "#ffffff";
   }
+
+  updateRollupChart();
 }
 
-  function resetAll() {
+    function resetAll() {
   for (const el of segments) el.style.fill = "#ffffff";
   for (const k in sliceLevel) sliceLevel[k] = 0;
+
+  updateRollupChart();
 
   // Clear submit UI
   const submitStatus = document.getElementById("submitStatus");
@@ -649,12 +756,16 @@ if (!cycle_id) {
     });
   });
 
-  window.addEventListener("pointerup", () => { isDown = false; });
+    window.addEventListener("pointerup", () => { isDown = false; });
 
   document.getElementById("resetBtn").addEventListener("click", resetAll);
 
+  updateRollupChart();
+
   // Download PNG
   document.getElementById("downloadBtn").addEventListener("click", async () => {
+  updateRollupChart();
+
   // Clone SVG so we can modify it for export without changing what’s on screen
   const svgClone = svg.cloneNode(true);
 
@@ -778,16 +889,12 @@ if (submitBtn && submitForm) {
     // NEW: steward param mapped into user_email field (sheet column stays user_email)
     document.getElementById("f_user_email").value = steward || "";
 
-    // NEW: rollups (averages)
-    const care = (s.emotional + s.physical) / 2;
-    const pacing = (s.learning + s.surroundings) / 2;
-    const trust = (s.spiritual + s.social) / 2;
-    const alignment = (s.financial + s.work) / 2;
+        const rollups = getRollups();
 
-    document.getElementById("f_care").value = care;
-    document.getElementById("f_pacing").value = pacing;
-    document.getElementById("f_trust").value = trust;
-    document.getElementById("f_alignment").value = alignment;
+    document.getElementById("f_care").value = rollups.care;
+    document.getElementById("f_pacing").value = rollups.pacing;
+    document.getElementById("f_trust").value = rollups.trust;
+    document.getElementById("f_alignment").value = rollups.alignment;
 
     document.getElementById("f_work").value = s.work;
     document.getElementById("f_social").value = s.social;
